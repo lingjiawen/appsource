@@ -1,0 +1,44 @@
+version: '3.9'
+
+networks:
+  mango_source_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.23.100.0/24  # 自定义子网
+
+services:
+  mango:
+    image: appsource:prod
+    container_name: mango-appsource
+    restart: always
+    ports:
+      - "8808:8808"
+    volumes:
+      - ./:/app
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    networks:
+      mango_source_network:
+        ipv4_address: 172.23.100.10  # 指定静态 IP
+
+  redis:
+    image: redis:6.2
+    container_name: mango-redis
+    restart: always
+    ports:
+      - "6666:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+    volumes:
+      - ./redis-data:/data
+    networks:
+      mango_source_network:
+        ipv4_address: 172.23.100.20  # 指定静态 IP

@@ -1,0 +1,73 @@
+# 第一阶段: 构建 libzsign.so
+FROM alpine:3.18 AS builder
+
+# 安装编译依赖（确保 g++ 和 musl-dev）
+RUN apk add --no-cache \
+    git \
+    build-base \
+    cmake \
+    musl-dev \
+    openssl-dev \
+    minizip-dev \
+    zlib-dev
+
+# 复制 zsign 源码
+COPY ./zsign /zsign
+
+# 编译 zsign
+WORKDIR /zsign/build/linux
+RUN make clean && make CC=gcc CXX=g++
+
+# 第二阶段: 构建 Golang 测试程序
+FROM alpine:3.18 AS go-builder
+
+# 安装 Golang 及 musl 相关库
+RUN apk add --no-cache \
+    go \
+    musl-dev \
+    minizip-dev \
+    openssl-dev \
+    zlib-dev
+
+# 复制 libzsign 头文件和库文件
+COPY --from=builder /zsign/src /usr/local/include/zsign
+COPY --from=builder /zsign/bin/libzsign.so /usr/local/lib/
+
+# 设置工作目录
+WORKDIR /app
+
+# 复制测试代码
+COPY test.go /app/main.go
+
+# 配置 CGO 编译环境
+ENV CGO_ENABLED=1 \
+    CC=gcc \
+    CXX=g++ \
+    GOOS=linux \
+    CGO_CFLAGS="-I/usr/local/include/zsign" \
+    CGO_LDFLAGS="-L/usr/local/lib -lzsign -lminizip"
+
+# 初始化 Go 模块并编译
+RUN go mod init test_zsign && \
+    go mod tidy && \
+    go build -o test_zsign main.go
+
+# 第三阶段: 运行环境
+FROM alpine:3.18
+
+# 安装运行时依赖
+RUN apk add --no-cache \
+    musl \
+    openssl \
+    libstdc++ \
+    minizip-dev \
+    zlib-dev
+
+# 复制 libzsign.so
+COPY --from=builder /zsign/bin/libzsign.so /usr/local/lib/
+
+# 复制 Golang 测试程序
+COPY --from=go-builder /app/test_zsign /usr/local/bin/test_zsign
+
+# 运行测试
+CMD ["/bin/sh"]
