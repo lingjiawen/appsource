@@ -12,6 +12,7 @@ package signDevice
 import (
 	"context"
 	"errors"
+	"github.com/gogf/gf/v2/os/gtime"
 	"mangosmithy/internal/app/install/dao"
 	"mangosmithy/internal/app/install/model"
 	"mangosmithy/internal/app/install/model/do"
@@ -116,14 +117,20 @@ func (s *sSignDevice) List(ctx context.Context, req *model.SignDeviceSearchReq) 
 		liberr.ErrIsNil(ctx, err, "获取数据失败")
 		listRes.List = make([]*model.SignDeviceListRes, len(res))
 		for k, v := range res {
+			addTime := gtime.NewFromTimeStamp(gconv.Int64(v.AddTime))
+			addTimeStr := addTime.Format("Y-m-d H:i:s")
+
+			expireTime := gtime.NewFromTimeStamp(gconv.Int64(v.ExpireTime))
+			expireTimeStr := expireTime.Format("Y-m-d H:i:s")
+
 			listRes.List[k] = &model.SignDeviceListRes{
 				Id:              v.Id,
 				Udid:            v.Udid,
 				Name:            v.Name,
 				CertId:          v.CertId,
-				AddTime:         v.AddTime,
+				AddTime:         addTimeStr,
 				Model:           v.Model,
-				ExpireTime:      v.ExpireTime,
+				ExpireTime:      expireTimeStr,
 				RedeemCode:      v.RedeemCode,
 				AccountType:     v.AccountType,
 				WarrantyType:    v.WarrantyType,
@@ -356,7 +363,7 @@ func (s *sSignDevice) Delete(ctx context.Context, ids []uint) (err error) {
 	return
 }
 
-// 设备管理禁用修改（状态）
+// ChangeActive 设备管理禁用修改（状态）
 func (s *sSignDevice) ChangeActive(ctx context.Context, id uint, active int) (err error) {
 	err = g.Try(ctx, func(ctx context.Context) {
 		_, err = dao.SignDevice.Ctx(ctx).WherePri(id).

@@ -5,7 +5,7 @@
     <el-card shadow="hover">
         <div class="{{.table.ModuleName}}-{{.table.BusinessName|CaseCamelLower}}-search mb15">
             <el-form :model="tableData.param" ref="queryRef" :inline="true" label-width="100px">
-            <el-row>
+            <el-row class="search-fields-container">
             {{$colIndex := 0}}
             {{range $index, $column := .table.QueryColumns}}
               {{if and $column.IsQuery (ne $column.ColumnName "created_by") (ne $column.ColumnName "updated_by") }}
@@ -230,7 +230,7 @@
               </el-row>
             </el-form>
 
-            <el-row :gutter="10" class="mb8">
+            <el-row :gutter="10" class="btn-container">
               <el-col :span="1.5">
                 <el-button
                   type="primary"
@@ -415,7 +415,7 @@
             {{if $column.IsFixed}}fixed="left"{{end}} />
           {{end}}
         {{end}}
-          <el-table-column label="操作" align="center" class-name="small-padding" min-width="{{if eq .table.ShowDetail "true"}}200{{else}}160{{end}}px" fixed="right">
+          <el-table-column label="操作" align="center" class-name="operation-container small-padding" min-width="80px" fixed="right">
             <template #default="scope">
             {{if eq .table.ShowDetail "true"}}
               <el-button

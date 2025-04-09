@@ -1,0 +1,18 @@
+# manifest/docker/Dockerfile.go
+FROM golang:1.23-alpine AS go-build
+
+# 从本地缓存复制 zsign 库
+COPY ./build/zsign/include /usr/local/include/zsign
+COPY ./build/zsign/libzsign.so /usr/local/lib/
+
+RUN apk add --no-cache musl-dev minizip-dev openssl-dev zlib-dev gcc g++
+WORKDIR /app
+COPY . .
+RUN CGO_ENABLED=1 CC=gcc CXX=g++ GOOS=linux GOARCH=amd64 \
+    CGO_CFLAGS="-I/usr/local/include/zsign" \
+    CGO_LDFLAGS="-L/usr/local/lib -lzsign -lminizip" \
+    go build -o /app/main main.go  # 修改输出路径到 /app
+
+# 导出阶段：将二进制文件打包到独立层
+FROM scratch AS export
+COPY --from=go-build /app/main /main

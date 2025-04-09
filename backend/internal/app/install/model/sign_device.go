@@ -55,9 +55,9 @@ type SignDeviceListRes struct {
 	Udid            string                   `json:"udid" dc:"设备码"`
 	Name            string                   `json:"name" dc:"证书名"`
 	CertId          string                   `json:"certId" dc:"证书标识"`
-	AddTime         uint64                   `json:"addTime" dc:"添加时间"`
+	AddTime         string                   `json:"addTime" dc:"添加时间"`
 	Model           string                   `json:"model" dc:"设备型号"`
-	ExpireTime      uint64                   `json:"expireTime" dc:"过期时间"`
+	ExpireTime      string                   `json:"expireTime" dc:"过期时间"`
 	RedeemCode      string                   `json:"redeemCode" dc:"兑换卡密"`
 	AccountType     int                      `json:"accountType" dc:"时效类型"`
 	WarrantyType    int                      `json:"warrantyType" dc:"售后类型"`

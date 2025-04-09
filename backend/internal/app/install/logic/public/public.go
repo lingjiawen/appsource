@@ -527,6 +527,7 @@ func (s *sPublic) CheckDevices(ctx context.Context, req *model.CheckDevicesReq) 
 				Name:        device.Name,
 				Udid:        device.Udid,
 				CertId:      device.CertId,
+				RedeemCode:  device.RedeemCode,
 				AddTime:     addTime,
 				ExpireTime:  expireTime,
 				Status:      certStatusMap[device.Status],

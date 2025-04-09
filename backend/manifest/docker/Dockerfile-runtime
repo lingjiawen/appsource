@@ -1,0 +1,28 @@
+FROM alpine:3.18
+
+# 直接从本地构建目录复制（完全解耦）
+COPY ./build/zsign/libzsign.so /usr/local/lib/
+COPY ./build/go/main /usr/bin/main
+
+ENV TZ=Asia/Shanghai
+RUN apk add --no-cache tzdata && \
+    cp /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo $TZ > /etc/timezone
+
+RUN apk add --no-cache \
+    musl \
+    openssl \
+    libstdc++ \
+    minizip \
+    zlib
+
+WORKDIR /app
+
+# 确保运行时动态库能被找到
+ENV LD_LIBRARY_PATH=/usr/local/lib
+
+RUN chmod +x /usr/bin/main
+
+EXPOSE 8808
+
+CMD ["main"]

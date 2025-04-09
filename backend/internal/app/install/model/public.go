@@ -39,6 +39,7 @@ type CheckDevicesReq struct {
 type DeviceInfo struct {
 	Name        string `json:"name" dc:"设备名称"`
 	Udid        string `json:"udid" dc:"UDID"`
+	RedeemCode  string `json:"redeem_code" dc:"兑换码"`
 	CertId      string `json:"cert_id" dc:"证书ID"`
 	AddTime     string `json:"add_time" dc:"添加时间"`
 	ExpireTime  string `json:"expire_time" dc:"过期时间"`
