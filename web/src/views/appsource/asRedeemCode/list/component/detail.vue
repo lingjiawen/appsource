@@ -30,7 +30,7 @@
           <el-descriptions-item :span="1">            
               <template #label>
                 <div class="cell-item">
-                  设备码
+                  UDID
                 </div>
               </template>
               {{ formData.udid }}            

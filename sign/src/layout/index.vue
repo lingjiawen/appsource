@@ -44,8 +44,10 @@ const route = useRoute();
 
 // 子组件样式
 :deep(.copyright) {
-  position: absolute;
-  bottom: var(--van-tabbar-height);
+  //position: relative;
+  //bottom: var(--van-tabbar-height);
+  //background-color: var(--color-background-2);
+  //background-color: var(--van-tabbar-background);
   left: 0;
   width: 100%;
   text-align: center;

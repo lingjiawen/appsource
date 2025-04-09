@@ -9,8 +9,8 @@
         <el-form-item label="兑换码" prop="code">
           <el-input v-model="formData.code" placeholder="请输入兑换码" />
         </el-form-item>        
-        <el-form-item label="设备码" prop="udid">
-          <el-input v-model="formData.udid" placeholder="请输入设备码" />
+        <el-form-item label="UDID" prop="udid">
+          <el-input v-model="formData.udid" placeholder="请输入UDID" />
         </el-form-item>        
         <el-form-item label="类型" prop="type">
           <el-radio-group v-model="formData.type">

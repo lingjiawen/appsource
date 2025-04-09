@@ -178,23 +178,23 @@
               </div>
             </template>
             <el-switch  v-model="formData.active" class="ml-2" disabled />
-          </el-descriptions-item>        
-          <el-descriptions-item :span="1">            
+          </el-descriptions-item>
+          <el-descriptions-item :span="1">
               <template #label>
                 <div class="cell-item">
                   创建人
                 </div>
               </template>
-              {{ formData.createdBy }}            
-          </el-descriptions-item>        
-          <el-descriptions-item :span="1">            
+              {{ formData.createdBy }}
+          </el-descriptions-item>
+          <el-descriptions-item :span="1">
               <template #label>
                 <div class="cell-item">
                   修改人
                 </div>
               </template>
-              {{ formData.updatedBy }}            
-          </el-descriptions-item>        
+              {{ formData.updatedBy }}
+          </el-descriptions-item>
           <el-descriptions-item :span="1">
             <template #label>
               <div class="cell-item">

@@ -15,6 +15,20 @@ body {
     sans-serif;
   color: var(--van-text-color);
   background-color: var(--color-background-2);
+  margin: 0;
+  overflow: hidden; /* 禁用 body 滚动 */
+}
+
+// 隐藏滚动条
+
+* {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    -webkit-overflow-scrolling: touch; /* iOS 平滑滚动 */
+}
+
+*::-webkit-scrollbar {
+    display: none;
 }
 
 html {

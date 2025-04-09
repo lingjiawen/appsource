@@ -5,10 +5,10 @@
             <el-form :model="tableData.param" ref="queryRef" :inline="true" label-width="100px">
             <el-row>
               <el-col :span="8" class='colBlock'>
-                <el-form-item label="设备码" prop="udid">
+                <el-form-item label="UDID" prop="udid">
                   <el-input
                       v-model="tableData.param.udid"
-                      placeholder="请输入设备码"
+                      placeholder="请输入UDID"
                       clearable
                       @keyup.enter.native="asRedeemCodeList"
                   />
@@ -101,7 +101,7 @@
                   type="primary"
                   @click="handleAdd"
                   v-auth="'api/v1/appsource/asRedeemCode/add'"
-                ><el-icon><ele-Plus /></el-icon>新增</el-button>
+                ><el-icon><ele-Plus /></el-icon>生成兑换码</el-button>
               </el-col>
               <el-col :span="1.5">
                 <el-button
@@ -143,7 +143,7 @@
           <el-table-column label="兑换码" align="center" prop="code"
             min-width="150px"            
              />          
-          <el-table-column label="设备码" align="center" prop="udid"
+          <el-table-column label="UDID" align="center" prop="udid"
             min-width="150px"            
              />          
           <el-table-column label="类型" align="center" prop="type" :formatter="typeFormat"

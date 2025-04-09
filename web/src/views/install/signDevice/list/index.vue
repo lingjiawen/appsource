@@ -3,7 +3,7 @@
     <el-card shadow="hover">
         <div class="install-signDevice-search mb15">
             <el-form :model="tableData.param" ref="queryRef" :inline="true" label-width="100px">
-            <el-row>                
+            <el-row class="search-fields-container">
                 <el-col :span="8" class="colBlock">
                   <el-form-item label="ID" prop="id">
                     <el-input
@@ -219,7 +219,7 @@
                 </el-col>            
               </el-row>
             </el-form>
-            <el-row :gutter="10" class="mb8">
+            <el-row :gutter="10" class="btn-container">
               <el-col :span="1.5">
                 <el-button
                   type="primary"
@@ -261,54 +261,22 @@
         </div>
         <el-table v-loading="loading" :data="tableData.data" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" align="center" />          
-          <el-table-column label="ID" align="center" prop="id"
-            min-width="150px"            
-             />          
-          <el-table-column label="设备码" align="center" prop="udid"
-            min-width="150px"            
-             />          
-          <el-table-column label="证书名" align="center" prop="name"
-            min-width="150px"            
-             />          
-          <el-table-column label="证书标识" align="center" prop="certId"
-            min-width="150px"            
-             />          
-          <el-table-column label="添加时间" align="center" prop="addTime"
-            min-width="150px"            
-             />          
-          <el-table-column label="设备型号" align="center" prop="model"
-            min-width="150px"            
-             />          
-          <el-table-column label="过期时间" align="center" prop="expireTime"
-            min-width="150px"            
-             />          
-          <el-table-column label="兑换卡密" align="center" prop="redeemCode"
-            min-width="150px"            
-             />          
-          <el-table-column label="时效类型" align="center" prop="accountType" :formatter="accountTypeFormat"
-            min-width="150px"            
-             />          
-          <el-table-column label="售后类型" align="center" prop="warrantyType" :formatter="warrantyTypeFormat"
-            min-width="150px"            
-             />          
-          <el-table-column label="设备类型" align="center" prop="deviceType" :formatter="deviceTypeFormat"
-            min-width="150px"            
-             />          
-          <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat"
-            min-width="150px"            
-             />          
-          <el-table-column label="出书方式" align="center" prop="pool" :formatter="poolFormat"
-            min-width="150px"            
-             />          
-          <el-table-column label="对接平台" align="center" prop="apiPlatform" :formatter="apiPlatformFormat"
-            min-width="150px"            
-             />          
-          <el-table-column label="对接售后类型" align="center" prop="apiWarrantyType" :formatter="apiWarrantyTypeFormat"
-            min-width="150px"            
-             />          
-          <el-table-column label="禁用" align="center" prop="active"
-          min-width="150px"          
-          >
+          <el-table-column label="ID" align="center" prop="id" min-width="80px"/>
+          <el-table-column label="UDID" align="center" prop="udid" min-width="250px" />
+          <el-table-column label="证书名" align="center" prop="name" min-width="150px"/>
+          <el-table-column label="证书标识" align="center" prop="certId" min-width="150px"/>
+          <el-table-column label="设备型号" align="center" prop="model" min-width="180px"/>
+          <el-table-column label="添加时间" align="center" prop="addTime" min-width="180px"/>
+          <el-table-column label="过期时间" align="center" prop="expireTime" min-width="180px"/>
+          <el-table-column label="兑换卡密" align="center" prop="redeemCode" min-width="180px"/>
+          <el-table-column label="时效类型" align="center" prop="accountType" :formatter="accountTypeFormat" min-width="80px"/>
+          <el-table-column label="售后类型" align="center" prop="warrantyType" :formatter="warrantyTypeFormat" min-width="100px"/>
+          <el-table-column label="设备类型" align="center" prop="deviceType" :formatter="deviceTypeFormat" min-width="80px"/>
+          <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" min-width="80px"/>
+          <el-table-column label="出书方式" align="center" prop="pool" :formatter="poolFormat" min-width="100px"/>
+          <el-table-column label="对接平台" align="center" prop="apiPlatform" :formatter="apiPlatformFormat" min-width="100px"/>
+          <el-table-column label="对接售后类型" align="center" prop="apiWarrantyType" :formatter="apiWarrantyTypeFormat" min-width="120px"/>
+          <el-table-column label="禁用" align="center" prop="active" min-width="100px">
               <template #default="scope">
                 <el-switch  v-model="scope.row.active"
                             class="ml-2"
@@ -316,25 +284,14 @@
                             :inactive-value=1
                             @change="changeActive(scope.row)"/>
               </template>
-          </el-table-column>          
-          <el-table-column label="创建人" align="center" prop="createdBy"
-            min-width="150px"            
-             />          
-          <el-table-column label="创建时间" align="center" prop="createdAt"
-            min-width="150px"            
-            >
+          </el-table-column>
+          <el-table-column label="创建时间" align="center" prop="createdAt" min-width="180px">
             <template #default="scope">
                 <span>{{ proxy.parseTime(scope.row.createdAt, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
             </template>
           </el-table-column>        
-          <el-table-column label="操作" align="center" class-name="small-padding" min-width="200px" fixed="right">
-            <template #default="scope">            
-              <el-button
-                type="primary"
-                link
-                @click="handleView(scope.row)"
-                v-auth="'api/v1/install/signDevice/get'"
-              ><el-icon><ele-View /></el-icon>详情</el-button>              
+          <el-table-column label="操作" align="center" class-name="operation-container small-padding" min-width="80px" fixed="right">
+            <template #default="scope">
               <el-button
                 type="primary"
                 link

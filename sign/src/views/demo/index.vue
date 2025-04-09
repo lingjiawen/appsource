@@ -5,7 +5,7 @@ import Fa6SolidHeart from "@iconify-icons/fa6-solid/heart";
 import { useConfigStore } from "@/store/useConfigStore";
 import { useRoute } from "vue-router"; // 导入 store
 import { installPrivateApi, deviceCheckApi, installApi } from "@/api/mock";
-import { showFailToast } from "vant";
+import { showFailToast, Toast } from "vant";
 
 const configStore = useConfigStore(); // 使用 store 实例
 
@@ -89,48 +89,67 @@ const base64mp = ref("");
 const privatePassword = ref("1");
 
 // 上传文件并获取Base64
-function uploadFile(type) {
-  // 创建一个文件输入框
+// 上传文件并获取Base64（添加文件类型和大小限制）
+function uploadFile(type: 'p12' | 'mp') {
   const input = document.createElement("input");
   input.type = "file";
 
-  // 监听文件选择事件
-  input.addEventListener("change", (e) => {
-    const target = e.target as HTMLInputElement; // 类型断言
+  // 设置文件类型限制
+  input.accept = type === 'p12'
+      ? '.p12, application/x-pkcs12'
+      : '.mobileprovision, application/x-apple-aspen-config';
 
-    const file = target.files?.[0]; // 可选链处理
+  input.addEventListener("change", (e) => {
+    const target = e.target as HTMLInputElement;
+    const file = target.files?.[0];
+
     if (!file) return;
 
+    // 文件类型验证
+    const isValidType = type === 'p12'
+        ? file.name.toLowerCase().endsWith('.p12')
+        : file.name.toLowerCase().endsWith('.mobileprovision');
+
+    if (!isValidType) {
+      Toast.fail(`请选择${type === 'p12' ? '.p12' : '.mobileprovision'} 格式文件`);
+      input.value = ''; // 清空选择
+      return;
+    }
+
+    // 文件大小验证（5MB）
+    const MAX_SIZE = 5 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      Toast.fail("文件大小不能超过5MB");
+      input.value = '';
+      return;
+    }
+
+    // 读取文件
     const reader = new FileReader();
     reader.onload = (event) => {
-      const result = event.target.result;
-
+      const result = event.target?.result;
       if (typeof result === "string") {
         const base64 = result.split(",")[1];
-
         if (type === "p12") {
           base64p12.value = base64;
-        } else if (type === "mp") {
+        } else {
           base64mp.value = base64;
         }
-      } else {
-        console.error("文件读取失败：", result);
       }
     };
-
     reader.readAsDataURL(file);
   });
 
-
-  // 触发文件选择框
   input.click();
 }
 
+// 上传按钮处理函数
 const uploadP12 = () => {
-  uploadFile("p12");
+  uploadFile("p12"); // 限制.p12文件
 };
+
 const uploadMP = () => {
-  uploadFile("mp");
+  uploadFile("mp"); // 限制.mobileprovision文件
 };
 
 const requestPrivateInstall = async () => {
@@ -255,330 +274,332 @@ onMounted(() => {
     </div>
   </van-overlay>
   <div class="demo-content px-[12px]">
-    <div class="max-container">
-      <img
-        class="block w-[80px] mx-auto mb-[10px] pt-[40px] dark:hidden"
-        alt="Logo"
-        src="~@/assets/logo.png"
-      />
-      <img
-        class="block w-[80px] mx-auto mb-[10px] pt-[40px] hidden dark:block"
-        alt="Logo"
-        src="~@/assets/logo-dark.png"
-      />
-      <div
-        class="text-[14px] py-[12px] px-[20px] rounded-[12px] bg-[var(--color-block-background)] mt-[14px]"
-      >
-        <div>
-          <a class="flex items-center" :href="contactUrl" target="_blank">
-            <i-icon
-              :icon="Fa6SolidHeart"
-              class="inline-block text-[20px] mr-3"
-            />
-            <h3 class="font-bold text-[18px] my-[4px]">{{ contactName }}</h3>
-            <svg-icon class="text-[12px] ml-[5px]" name="link" />
-          </a>
-        </div>
-        <p class="leading-[24px] my-[6px]">
-          {{ notice }}
-        </p>
-      </div>
-
-      <div class="mt-[14px] text-[24px]">
-        <van-tabs
-          v-model:active="tabActive"
-          sticky
-          class="bg-[var(--van-background, #1c1c1e)] rounded-[12px] overflow-hidden"
+    <div class="flex-container">
+      <div class="max-container">
+        <img
+          class="block w-[80px] mx-auto mb-[10px] pt-[40px] dark:hidden"
+          alt="Logo"
+          src="~@/assets/logo.png"
+        />
+        <img
+          class="block w-[80px] mx-auto mb-[10px] pt-[40px] hidden dark:block"
+          alt="Logo"
+          src="~@/assets/logo-dark.png"
+        />
+        <div
+          class="text-[14px] py-[12px] px-[20px] rounded-[12px] bg-[var(--color-block-background)] mt-[14px]"
         >
-          <van-tab title="兑换安装">
-            <div class="tabs-content">
-              <van-form @submit="onConsumeSubmit">
-                <van-cell-group class="rounded-b-[12px] overflow-hidden">
-                  <van-field
-                    v-model="udid"
-                    label-width="3.5rem"
-                    name="UDID"
-                    label="UDID"
-                    placeholder="UDID"
-                    center
-                    clearable
-                  >
-                    <template #button>
-                      <van-button size="small" type="primary" @click="getUDID"
-                        >获取
-                      </van-button>
-                    </template>
-                  </van-field>
-                  <van-field
-                    v-model="code"
-                    label-width="3.5rem"
-                    name="兑换码"
-                    label="兑换码"
-                    center
-                    placeholder="兑换码"
-                  >
-                    <template #button>
-                      <van-button size="small" type="primary" @click="buyCode"
-                        >购买
-                      </van-button>
-                    </template>
-                  </van-field>
-                </van-cell-group>
-                <div style="margin: 16px">
-                  <van-button round block type="primary" native-type="submit">
-                    兑换安装
-                  </van-button>
-                </div>
-                <div v-if="freeOpen" style="margin: 16px">
-                  <van-button round block type="primary" native-type="submit">
-                    安装体验版
-                  </van-button>
-                </div>
-              </van-form>
-            </div>
-          </van-tab>
-
-          <van-tab title="自助上传">
-            <div class="tabs-content">
-              <van-form @submit="onPrivateSubmit">
-                <van-cell-group class="rounded-b-[12px] overflow-hidden">
-                  <van-field
-                    v-model="base64p12"
-                    type="textarea"
-                    name="base64p12"
-                    label="证书文件"
-                    label-align="top"
-                    clearable
-                    :autosize="{ maxHeight: 100, minHeight: 50 }"
-                    placeholder="输入base64编码的证书文件"
-                  >
-                    <template #button>
-                      <van-button size="small" type="primary" @click="uploadP12"
-                        >上传
-                      </van-button>
-                    </template>
-                  </van-field>
-                  <van-field
-                    v-model="base64mp"
-                    type="textarea"
-                    name="base64mp"
-                    label="描述文件"
-                    label-align="top"
-                    clearable
-                    :autosize="{ maxHeight: 100, minHeight: 50 }"
-                    placeholder="输入base64编码的描述文件"
-                  >
-                    <template #button>
-                      <van-button size="small" type="primary" @click="uploadMP"
-                        >上传
-                      </van-button>
-                    </template>
-                  </van-field>
-                  <van-field
-                    v-model="privatePassword"
-                    name="证书密码"
-                    label="证书密码"
-                    label-align="top"
-                    placeholder="输入证书密码"
-                  />
-                </van-cell-group>
-                <div style="margin: 16px">
-                  <van-button round block type="primary" native-type="submit">
-                    安装
-                  </van-button>
-                </div>
-              </van-form>
-            </div>
-          </van-tab>
-
-          <van-tab title="证书查询">
-            <div class="tabs-content">
-              <van-form @submit="onSearchSubmit">
-                <van-cell-group class="rounded-b-[12px] overflow-hidden">
-                  <van-field name="radio" label="查询方式" label-width="3.5rem">
-                    <template #input>
-                      <van-radio-group
-                        v-model="searchType"
-                        direction="horizontal">
-                        <van-radio name="udid">UDID</van-radio>
-                        <van-radio name="code">兑换码</van-radio>
-                        <van-radio name="cert_id">证书编号</van-radio>
-                      </van-radio-group>
-                    </template>
-                  </van-field>
-
-                  <van-field
-                    v-model="searchValue"
-                    label-width="3.5rem"
-                    name="searchValue"
-                    label="搜索值"
-                    placeholder="输入UDID/兑换码/证书编号"
-                    clearable
-                  />
-                </van-cell-group>
-                <div style="margin: 16px">
-                  <van-button round block type="primary" native-type="submit">
-                    查询
-                  </van-button>
-                </div>
-              </van-form>
-            </div>
-          </van-tab>
-        </van-tabs>
-      </div>
-
-      <!-- 圆角弹窗（底部） -->
-      <van-popup
-        :show="showPopup"
-        round
-        position="bottom"
-        class="notice-popup"
-        @opened="startCountdown()"
-      >
-        <div class="notice-popup-wrapper">
-          <div class="notice-popup-header">
-            <div class="notice-popup-title">
-              <van-icon name="info" class="notice-icon" />
-              <span>使用须知</span>
-            </div>
-            <div v-show="!showBottom" class="notice-countdown">
-              请仔细阅读 ({{ countdown }}s)
-            </div>
+          <div>
+            <a class="flex items-center" :href="contactUrl" target="_blank">
+              <i-icon
+                :icon="Fa6SolidHeart"
+                class="inline-block text-[20px] mr-3"
+              />
+              <h3 class="font-bold text-[18px] my-[4px]">{{ contactName }}</h3>
+              <svg-icon class="text-[12px] ml-[5px]" name="link" />
+            </a>
           </div>
-          <div class="notice-popup-content">
-            <div class="notice-popup-text" v-html="popupHtml" />
-          </div>
-          <div class="notice-popup-footer">
-            <div class="notice-buttons">
-              <van-button
-                round
-                block
-                :disabled="!showBottom"
-                class="close-button"
-                @click="showPopup = false"
-              >
-                <van-icon name="checked" class="button-icon" />
-                <span>我知道了</span>
-              </van-button>
-              <van-button
-                type="primary"
-                :disabled="!showBottom"
-                round
-                block
-                @click="handleNotShowIn24h"
-              >
-                <i
-                  class="van-badge__wrapper van-icon van-icon-clock-o button-icon"
-                />
-                <span>24小时内不再提示</span>
-              </van-button>
-            </div>
-          </div>
+          <p class="leading-[24px] my-[6px]">
+            {{ notice }}
+          </p>
         </div>
-      </van-popup>
 
-      <van-popup
-        :show="showDevicesPopup"
-        round
-        position="bottom"
-        class="notice-popup"
-      >
-        <div class="notice-popup-wrapper">
-          <div class="notice-popup-header">
-            <div class="notice-popup-title">
-              <van-icon name="info" class="notice-icon" />
-              <span>查询结果</span>
-            </div>
-          </div>
-          <div class="notice-popup-content">
-            <div class="notice-popup-text">
-              <!--  如果为空显示没有设备的提示 -->
-              <div v-if="searchDevices.length === 0">
-                <p>没有查询到相关设备</p>
+        <div class="mt-[14px] text-[24px]">
+          <van-tabs
+            v-model:active="tabActive"
+            sticky
+            class="bg-[var(--van-background, #1c1c1e)] rounded-[12px] overflow-hidden"
+          >
+            <van-tab title="兑换安装">
+              <div class="tabs-content">
+                <van-form @submit="onConsumeSubmit">
+                  <van-cell-group class="rounded-b-[12px] overflow-hidden">
+                    <van-field
+                      v-model="udid"
+                      label-width="3.5rem"
+                      name="UDID"
+                      label="UDID"
+                      placeholder="UDID"
+                      center
+                      clearable
+                    >
+                      <template #button>
+                        <van-button size="small" type="primary" @click="getUDID"
+                          >获取
+                        </van-button>
+                      </template>
+                    </van-field>
+                    <van-field
+                      v-model="code"
+                      label-width="3.5rem"
+                      name="兑换码"
+                      label="兑换码"
+                      center
+                      placeholder="兑换码"
+                    >
+                      <template #button>
+                        <van-button size="small" type="primary" @click="buyCode"
+                          >购买
+                        </van-button>
+                      </template>
+                    </van-field>
+                  </van-cell-group>
+                  <div style="margin: 16px">
+                    <van-button round block type="primary" native-type="submit">
+                      兑换安装
+                    </van-button>
+                  </div>
+                  <div v-if="freeOpen" style="margin: 16px">
+                    <van-button round block type="primary" native-type="submit">
+                      安装体验版
+                    </van-button>
+                  </div>
+                </van-form>
               </div>
-              <!--  如果不为空显示设备列表 -->
-              <div v-else>
-                <van-cell-group
-                  v-for="device in searchDevices"
-                  :key="device.udid"
-                  inset
-                  class="cert-container"
+            </van-tab>
+
+            <van-tab title="自助上传">
+              <div class="tabs-content">
+                <van-form @submit="onPrivateSubmit">
+                  <van-cell-group class="rounded-b-[12px] overflow-hidden">
+                    <van-field
+                      v-model="base64p12"
+                      type="textarea"
+                      name="base64p12"
+                      label="证书文件"
+                      label-align="top"
+                      clearable
+                      :autosize="{ maxHeight: 100, minHeight: 50 }"
+                      placeholder="输入base64编码的证书文件"
+                    >
+                      <template #button>
+                        <van-button size="small" type="primary" @click="uploadP12"
+                          >上传
+                        </van-button>
+                      </template>
+                    </van-field>
+                    <van-field
+                      v-model="base64mp"
+                      type="textarea"
+                      name="base64mp"
+                      label="描述文件"
+                      label-align="top"
+                      clearable
+                      :autosize="{ maxHeight: 100, minHeight: 50 }"
+                      placeholder="输入base64编码的描述文件"
+                    >
+                      <template #button>
+                        <van-button size="small" type="primary" @click="uploadMP"
+                          >上传
+                        </van-button>
+                      </template>
+                    </van-field>
+                    <van-field
+                      v-model="privatePassword"
+                      name="证书密码"
+                      label="证书密码"
+                      label-align="top"
+                      placeholder="输入证书密码"
+                    />
+                  </van-cell-group>
+                  <div style="margin: 16px">
+                    <van-button round block type="primary" native-type="submit">
+                      安装
+                    </van-button>
+                  </div>
+                </van-form>
+              </div>
+            </van-tab>
+
+            <van-tab title="证书查询">
+              <div class="tabs-content">
+                <van-form @submit="onSearchSubmit">
+                  <van-cell-group class="rounded-b-[12px] overflow-hidden">
+                    <van-field
+                      name="radio"
+                      label="查询方式"
+                      label-width="3.6rem"
+                    >
+                      <template #input>
+                        <van-radio-group
+                          v-model="searchType"
+                          direction="horizontal">
+                          <van-radio name="udid">UDID</van-radio>
+                          <van-radio name="code">兑换码</van-radio>
+                          <van-radio name="cert_id">证书编号</van-radio>
+                        </van-radio-group>
+                      </template>
+                    </van-field>
+
+                    <van-field
+                      v-model="searchValue"
+                      label-width="3.6rem"
+                      name="searchValue"
+                      label="搜索值"
+                      placeholder="输入UDID/兑换码/证书编号"
+                      clearable
+                    />
+                  </van-cell-group>
+                  <div style="margin: 16px">
+                    <van-button round block type="primary" native-type="submit">
+                      查询
+                    </van-button>
+                  </div>
+                </van-form>
+              </div>
+            </van-tab>
+          </van-tabs>
+        </div>
+
+        <!-- 圆角弹窗（底部） -->
+        <van-popup
+          :show="showPopup"
+          round
+          position="bottom"
+          class="notice-popup"
+          @opened="startCountdown()"
+        >
+          <div class="notice-popup-wrapper">
+            <div class="notice-popup-header">
+              <div class="notice-popup-title">
+                <van-icon name="info" class="notice-icon" />
+                <span>使用须知</span>
+              </div>
+              <div v-show="!showBottom" class="notice-countdown">
+                请仔细阅读 ({{ countdown }}s)
+              </div>
+            </div>
+            <div class="notice-popup-content">
+              <div class="notice-popup-text" v-html="popupHtml" />
+            </div>
+            <div class="notice-popup-footer">
+              <div class="notice-buttons">
+                <van-button
+                  round
+                  block
+                  :disabled="!showBottom"
+                  class="close-button"
+                  @click="showPopup = false"
                 >
-                  <van-field
-                    v-model="device.cert_id"
-                    readonly
-                    label="证书编号"
+                  <van-icon name="checked" class="button-icon" />
+                  <span>我知道了</span>
+                </van-button>
+                <van-button
+                  type="primary"
+                  :disabled="!showBottom"
+                  round
+                  block
+                  @click="handleNotShowIn24h"
+                >
+                  <i
+                    class="van-badge__wrapper van-icon van-icon-clock-o button-icon"
                   />
-                  <van-field v-model="device.udid" readonly label="UDID" />
-                  <van-field v-model="device.udid" readonly label="证书名称" />
-                  <van-field
-                    v-model="device.add_time"
-                    readonly
-                    label="添加时间"
-                  />
-                  <van-field
-                    v-model="device.expire_time"
-                    readonly
-                    label="过期时间"
-                  />
-                  <van-field
-                    v-model="device.account_type"
-                    readonly
-                    label="证书类型"
-                  />
-                  <van-field v-model="device.status" readonly label="状态" />
-                </van-cell-group>
+                  <span>24小时内不再提示</span>
+                </van-button>
               </div>
             </div>
           </div>
-          <div class="notice-popup-footer">
-            <div class="notice-buttons">
-              <van-button
-                round
-                block
-                class="close-button"
-                @click="showDevicesPopup = false"
-              >
-                <van-icon name="checked" class="button-icon" />
-                <span>我知道了</span>
-              </van-button>
+        </van-popup>
+
+        <van-popup
+          :show="showDevicesPopup"
+          round
+          position="bottom"
+          class="notice-popup"
+        >
+          <div class="notice-popup-wrapper">
+            <div class="notice-popup-header">
+              <div class="notice-popup-title">
+                <van-icon name="info" class="notice-icon" />
+                <span>查询结果</span>
+              </div>
+            </div>
+            <div class="notice-popup-content">
+              <div class="notice-popup-text">
+                <!--  如果为空显示没有设备的提示 -->
+                <div v-if="searchDevices.length === 0">
+                  <p>没有查询到相关设备</p>
+                </div>
+                <!--  如果不为空显示设备列表 -->
+                <div v-else>
+                  <van-cell-group
+                    v-for="device in searchDevices"
+                    :key="device.udid"
+                    inset
+                    class="cert-container"
+                  >
+                    <van-field
+                      v-model="device.cert_id"
+                      readonly
+                      label="证书编号"
+                    />
+                    <van-field v-model="device.udid" readonly label="UDID" />
+                    <van-field v-model="device.redeem_code" readonly label="兑换码" />
+                    <van-field v-model="device.name" readonly label="证书名称" />
+                    <van-field
+                      v-model="device.add_time"
+                      readonly
+                      label="添加时间"
+                    />
+                    <van-field
+                      v-model="device.account_type"
+                      readonly
+                      label="证书类型"
+                    />
+                    <van-field v-model="device.status" readonly label="状态" />
+                  </van-cell-group>
+                </div>
+              </div>
+            </div>
+            <div class="notice-popup-footer">
+              <div class="notice-buttons">
+                <van-button
+                  round
+                  block
+                  class="close-button"
+                  @click="showDevicesPopup = false"
+                >
+                  <van-icon name="checked" class="button-icon" />
+                  <span>我知道了</span>
+                </van-button>
+              </div>
             </div>
           </div>
-        </div>
-      </van-popup>
-    </div>
-  </div>
-  <div class="copyright">
-    <div v-if="icp">
-      <a
-        href="https://beian.miit.gov.cn"
-        target="_blank"
-        style="text-decoration: none"
-        >{{ icp }}</a
-      >
-    </div>
-    <div v-if="vats">
-      <span
-        >增值电信业务经营许可证:
+        </van-popup>
+      </div>
+      <div class="copyright">
+      <div v-if="icp">
         <a
-          href="https://beian.miit.gov.cn"
-          target="_blank"
-          style="text-decoration: none"
-          >{{ vats }}</a
+            href="https://beian.miit.gov.cn"
+            target="_blank"
+            style="text-decoration: none"
+        >{{ icp }}</a
+        >
+      </div>
+      <div v-if="vats">
+      <span
+      >增值电信业务经营许可证:
+        <a
+            href="https://beian.miit.gov.cn"
+            target="_blank"
+            style="text-decoration: none"
+        >{{ vats }}</a
         ></span
       >
-    </div>
-    <div v-if="security">
-      <img
-        src="~@/assets/ga.png"
-        alt="公网安备"
-        style="width: 12px; height: 12px"
-      /><a
-        href="http://www.beian.gov.cn"
-        target="_blank"
-        style="text-decoration: none"
-        >{{ security }}</a
+      </div>
+      <div v-if="security">
+        <img
+            src="~@/assets/ga.png"
+            alt="公网安备"
+            style="width: 12px; height: 12px"
+        /><a
+          href="http://www.beian.gov.cn"
+          target="_blank"
+          style="text-decoration: none"
+      >{{ security }}</a
       >
+      </div>
+    </div>
     </div>
   </div>
 </template>
@@ -587,9 +608,31 @@ onMounted(() => {
 .demo-content {
   display: flex;
   flex-direction: column;
-  height: 100vh; // 让整个页面填充满屏幕
-  overflow: scroll;
-  padding-bottom: calc(var(--van-tabbar-height) * 4);
+  overflow-y: auto; /* 优先使用 auto 避免不必要的滚动条 */
+  //-webkit-overflow-scrolling: touch; /* 启用 iOS 弹性滚动 */
+  //height: 100vh; // 让整个页面填充满屏幕
+  height: calc(100dvh - var(--van-nav-bar-height) - var(--van-tabbar-height));
+  /* 处理刘海屏遮挡 */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  //padding-bottom: var(--van-tabbar-height); /* 避免内容被底部栏遮挡 */
+  //margin-top: var(--van-nav-bar-height); /* 补偿顶部导航栏高度 */
+  //overflow: scroll;
+  .flex-container {
+    flex: 1; /* 填充剩余空间 */
+    display: flex;
+    flex-direction: column;
+
+    .max-container {
+      flex-grow: 1; /* 内容区域自动扩展 */
+      overflow-y: auto; /* 允许内容滚动 */
+    }
+
+    .copyright {
+      flex-shrink: 0; /* 禁止底部收缩 */
+      //padding: 12px 0;
+    }
+  }
 }
 
 .tabs-content {
@@ -747,7 +790,8 @@ html.dark .notice-popup {
   margin-right: 0 !important;
   margin-bottom: 16px;
   margin-top: 16px;
-  background-color: white;
+  border: 1px solid var(--van-text-color-2);
+  background-color: var(--van-text-color-2);
 }
 
 .dark .close-button {

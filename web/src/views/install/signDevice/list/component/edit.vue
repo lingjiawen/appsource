@@ -23,19 +23,13 @@
         </el-form-item>        
         <el-form-item label="描述文件" prop="mobileprovision">
           <el-input v-model="formData.mobileprovision" placeholder="请输入描述文件" />
-        </el-form-item>        
-        <el-form-item label="添加时间" prop="addTime">
-          <el-input v-model="formData.addTime" placeholder="请输入添加时间" />
-        </el-form-item>        
+        </el-form-item>
         <el-form-item label="设备型号" prop="model">
           <el-input v-model="formData.model" placeholder="请输入设备型号" />
-        </el-form-item>        
-        <el-form-item label="过期时间" prop="expireTime">
-          <el-input v-model="formData.expireTime" placeholder="请输入过期时间" />
-        </el-form-item>        
+        </el-form-item>
         <el-form-item label="兑换卡密" prop="redeemCode">
           <el-input v-model="formData.redeemCode" placeholder="请输入兑换卡密" />
-        </el-form-item>        
+        </el-form-item>
         <el-form-item label="时效类型" prop="accountType">
           <el-radio-group v-model="formData.accountType">
             <el-radio
@@ -44,7 +38,7 @@
               :value="dict.value"
             >{{dict.label }}</el-radio>
           </el-radio-group>
-        </el-form-item>        
+        </el-form-item>
         <el-form-item label="售后类型" prop="warrantyType">
           <el-radio-group v-model="formData.warrantyType">
             <el-radio
