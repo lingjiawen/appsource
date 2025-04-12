@@ -30,3 +30,5 @@ resource/public/signed
 manifest/config/config.yaml
 GFastV3
 /manifest/config/db.yaml
+go_build_appsource_main_go
+go_build_main_go
