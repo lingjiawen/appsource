@@ -4,7 +4,6 @@
       <div class="install-signRedeemCode-search mb15">
         <el-form :model="tableData.param" ref="queryRef" :inline="true" label-width="100px">
           <el-row class="search-fields-container">
-
             <el-col :span="8">
               <el-form-item label="UDID" prop="udid">
                 <el-input
@@ -155,6 +154,11 @@
               </el-form-item>
             </el-col>
             <el-col :span="8" :class="showAll ? 'colBlock' : 'colNone'">
+              <el-form-item label="禁用" prop="force">
+                <el-switch v-model="tableData.param.force" class="ml-2"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8" :class="showAll ? 'colBlock' : 'colNone'">
               <el-form-item label="禁用" prop="banned">
                 <el-switch v-model="tableData.param.banned" class="ml-2"/>
               </el-form-item>
@@ -201,7 +205,7 @@
               <el-icon>
                 <ele-Plus/>
               </el-icon>
-              新增
+              生成兑换码
             </el-button>
           </el-col>
           <el-col :span="1.5">
@@ -298,6 +302,17 @@
                        :active-value=1
                        :inactive-value=0
                        @change="changeBanned(scope.row)"/>
+          </template>
+        </el-table-column>
+        <el-table-column label="强制添加" align="center" prop="force"
+                         min-width="150px"
+        >
+          <template #default="scope">
+            <el-switch v-model="scope.row.force"
+                       class="ml-2"
+                       :active-value=1
+                       :inactive-value=0
+                       @change="changeForce(scope.row)"/>
           </template>
         </el-table-column>
         <el-table-column label="激活" align="center" prop="active"
@@ -400,7 +415,7 @@ import {computed, getCurrentInstance, onMounted, reactive, ref, toRaw, toRefs} f
 import {ElMessage, ElMessageBox, FormInstance} from 'element-plus';
 import {
   changeSignRedeemCodeActive,
-  changeSignRedeemCodeBanned,
+  changeSignRedeemCodeBanned, changeSignRedeemCodeForce,
   delSignRedeemCode,
   listSignRedeemCode,
 } from "/@/api/install/signRedeemCode";
@@ -527,6 +542,14 @@ const apiPlatformFormat = (row: SignRedeemCodeTableColumns) => {
 // 对接售后类型字典翻译
 const apiWarrantyTypeFormat = (row: SignRedeemCodeTableColumns) => {
   return proxy.selectDictLabel(apple_warranty_type.value, row.apiWarrantyType);
+}
+const changeForce = (row: SignRedeemCodeTableColumns) => {
+  changeSignRedeemCodeForce(row.id, row.force)
+      .catch(() => {
+        setTimeout(() => {
+          row.force = !row.force
+        }, 300)
+      })
 }
 const changeBanned = (row: SignRedeemCodeTableColumns) => {
   changeSignRedeemCodeBanned(row.id, row.banned)

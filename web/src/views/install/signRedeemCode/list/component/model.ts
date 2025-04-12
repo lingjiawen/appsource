@@ -7,7 +7,8 @@ export interface SignRedeemCodeTableColumns {
     warrantyType:number;  // 售后类型    
     deviceType:string;  // 设备类型    
     pool:number;  // 出书方式    
-    apiPlatform:number;  // 对接平台    
+    apiPlatform:number;  // 对接平台
+    force:number;  // 强制
     note:string;  // 备注    
     apiWarrantyType:number;  // 对接售后类型    
     banned:number;  // 禁用    
@@ -28,7 +29,8 @@ export interface SignRedeemCodeInfoData {
     pool:number|undefined; // 出书方式    
     apiPlatform:number|undefined; // 对接平台    
     note:string|undefined; // 备注    
-    apiWarrantyType:number|undefined; // 对接售后类型    
+    apiWarrantyType:number|undefined; // 对接售后类型
+    force:boolean; // 强制
     banned:boolean; // 禁用    
     active:boolean; // 激活    
     activeAt:string|undefined; // 激活时间    
@@ -47,6 +49,7 @@ export interface SignRedeemCodeAddData {
     warrantyType:number|undefined; // 质保类型
     deviceType:string|undefined; // 设备类型
     pool:number|undefined; // 出书方式
+    force:number|undefined; // 强制
     apiPlatform:number|undefined; // 对接平台
     apiWarrantyType:number|undefined; // 对接质保
     note:string|undefined; // 备注
@@ -71,7 +74,8 @@ export interface SignRedeemCodeTableDataState {
             pool: number|undefined;            
             apiPlatform: number|undefined;            
             apiWarrantyType: number|undefined;            
-            note: string|undefined;            
+            note: string|undefined;
+            force: number|undefined;
             banned: number|undefined;            
             active: number|undefined;            
             activeAt: string|undefined;            

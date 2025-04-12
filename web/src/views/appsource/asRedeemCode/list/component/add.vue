@@ -1,5 +1,5 @@
 <template>
-  <div class="install-RedeemCode-add">
+  <div class="appsource-asRedeemCode-add">
     <!-- 添加或修改卡密管理对话框 -->
     <el-dialog v-model="isShowDialog" width="800px" :close-on-click-modal="false" :destroy-on-close="true">
       <template #header>
@@ -24,6 +24,9 @@
             </el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="备注" prop="note">
+          <el-input v-model="formData.note" type="textarea" placeholder="请输入备注" />
+        </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -38,9 +41,9 @@
 import {getCurrentInstance, onMounted, reactive, ref, toRefs, unref} from 'vue';
 import {ElMessage} from 'element-plus';
 import {addAsRedeemCode,} from "/@/api/appsource/asRedeemCode";
-import {AsRedeemCodeAddState,} from "/@/views/appsource/asRedeemCode/list/component/model"
+import {AsRedeemCodeAddState} from "/@/views/appsource/asRedeemCode/list/component/model"
 
-defineOptions({name: "ApiV1AppsourceAsRedeemCodeEdit"})
+defineOptions({name: "ApiV1AppsourceAsRedeemCodeAdd"})
 const emit = defineEmits(['asRedeemCodeList'])
 const props = defineProps({
   typeOptions: {
@@ -64,6 +67,7 @@ const state = reactive<AsRedeemCodeAddState>({
     quantity: undefined,
     prefix: undefined,
     type: undefined,
+    note: undefined,
   }
 });
 const {loading, isShowDialog, formData, rules} = toRefs(state);
@@ -114,6 +118,7 @@ const resetForm = () => {
     quantity: 1,
     prefix: '',
     type: '3',
+    note: "",
   }
 };
 </script>

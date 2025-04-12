@@ -23,6 +23,9 @@
         </el-form-item>        
         <el-form-item label="对接Token" prop="token">
           <el-input v-model="formData.token" placeholder="请输入对接Token" />
+        </el-form-item>        
+        <el-form-item label="权重" prop="weigh">
+          <el-input v-model="formData.weigh" placeholder="请输入权重" />
         </el-form-item>       
       </el-form>
       <template #footer>
@@ -68,6 +71,7 @@ const state = reactive<SignPlatformEditState>({
     token: undefined,    
     createdAt: undefined,    
     updatedAt: undefined,    
+    weigh: undefined,    
   },
   // 表单校验
   rules: {    
@@ -153,6 +157,7 @@ const resetForm = ()=>{
     token: undefined,    
     createdAt: undefined,    
     updatedAt: undefined,    
+    weigh: undefined,    
   }  
 };
 </script>

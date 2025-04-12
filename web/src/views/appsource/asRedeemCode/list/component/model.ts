@@ -14,7 +14,8 @@ export interface AsRedeemCodeInfoData {
     code:string|undefined; // 兑换码    
     udid:string|undefined; // 设备码    
     type:number|undefined; // 类型
-    active:boolean; // 是否激活    
+    active:boolean; // 是否激活
+    note:string|undefined; // 备注
     activeAt:string|undefined; // 激活时间    
     createdBy:number|undefined; // 创建人    
     updatedBy:number|undefined; // 修改人    
@@ -28,6 +29,7 @@ export interface AsRedeemCodeAddData {
     prefix:string|undefined; // 前缀
     quantity:number|undefined; // 数量
     type:number|undefined; // 类型
+    note:string|undefined; // 备注
 }
 
 export interface AsRedeemCodeTableDataState {
@@ -46,7 +48,8 @@ export interface AsRedeemCodeTableDataState {
             active: number|undefined;            
             activeAt: string|undefined;            
             createdBy: number|undefined;            
-            createdAt: string|undefined;            
+            createdAt: string|undefined;
+            note: string|undefined; // 备注
             dateRange: string[];
         };
     };

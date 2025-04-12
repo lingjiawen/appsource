@@ -3,7 +3,7 @@
     <el-card shadow="hover">
         <div class="appsource-asRedeemCode-search mb15">
             <el-form :model="tableData.param" ref="queryRef" :inline="true" label-width="100px">
-            <el-row>
+            <el-row class="search-fields-container">
               <el-col :span="8" class='colBlock'>
                 <el-form-item label="UDID" prop="udid">
                   <el-input
@@ -26,7 +26,7 @@
                 </el-col>
               <el-col :span="8" class="colBlock">
                 <el-form-item label="是否激活" prop="active">
-                  <el-select v-model="tableData.param.active" placeholder="选择是否激活" style="width: 130px">
+                  <el-select v-model="tableData.param.active" placeholder="选择是否激活">
                     <el-option value="1" label="激活"></el-option>
                     <el-option value="0" label="未激活"></el-option>
                   </el-select>
@@ -47,7 +47,7 @@
 
                 <el-col :span="8" :class="showAll ? 'colBlock' : 'colNone'">
                   <el-form-item label="类型" prop="type">
-                    <el-select filterable v-model="tableData.param.type" placeholder="请选择类型" clearable style="width:200px;">
+                    <el-select filterable v-model="tableData.param.type" placeholder="请选择类型" clearable>
                         <el-option
                             v-for="dict in appsource_redeem_code_type"
                             :key="dict.value"
@@ -56,12 +56,13 @@
                         />
                     </el-select>
                   </el-form-item>
-                </el-col>                
+                </el-col>
 
                 <el-col :span="8" :class="showAll ? 'colBlock' : 'colNone'">
                   <el-form-item label="激活时间" prop="activeAt">
                     <el-date-picker
-                        clearable  style="width: 200px"
+                        clearable
+                        style="min-width: 200px;width: 100%"
                         v-model="tableData.param.activeAt"
                         format="YYYY-MM-DD HH:mm:ss"
                         value-format="YYYY-MM-DD HH:mm:ss"                    
@@ -73,7 +74,8 @@
                 <el-col :span="8" :class="showAll ? 'colBlock' : 'colNone'">
                   <el-form-item label="生成时间" prop="createdAt">
                     <el-date-picker
-                        clearable  style="width: 200px"
+                        clearable
+                        style="min-width: 200px;width: 100%"
                         v-model="tableData.param.createdAt"
                         format="YYYY-MM-DD HH:mm:ss"
                         value-format="YYYY-MM-DD HH:mm:ss"                    
@@ -95,7 +97,7 @@
                 </el-col>            
               </el-row>
             </el-form>
-            <el-row :gutter="10" class="mb8">
+            <el-row :gutter="10" class="btn-container">
               <el-col :span="1.5">
                 <el-button
                   type="primary"
@@ -137,21 +139,11 @@
         </div>
         <el-table v-loading="loading" :data="tableData.data" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" align="center" />          
-          <el-table-column label="ID" align="center" prop="id"
-            min-width="150px"            
-             />          
-          <el-table-column label="兑换码" align="center" prop="code"
-            min-width="150px"            
-             />          
-          <el-table-column label="UDID" align="center" prop="udid"
-            min-width="150px"            
-             />          
-          <el-table-column label="类型" align="center" prop="type" :formatter="typeFormat"
-            min-width="150px"            
-             />          
-          <el-table-column label="是否激活" align="center" prop="active"
-          min-width="150px"          
-          >
+          <el-table-column label="ID" align="center" prop="id" min-width="80px" />
+          <el-table-column label="兑换码" align="center" prop="code" min-width="180px" />
+          <el-table-column label="UDID" align="center" prop="udid" min-width="250px" />
+          <el-table-column label="类型" align="center" prop="type" :formatter="typeFormat" min-width="80px" />
+          <el-table-column label="是否激活" align="center" prop="active" min-width="120px">
               <template #default="scope">
                   <el-switch  v-model="scope.row.active"
                               :active-value=1
@@ -159,29 +151,20 @@
                               class="ml-2"
                               @change="changeActive(scope.row)"/>
               </template>
-          </el-table-column>          
-          <el-table-column label="激活时间" align="center" prop="activeAt"
-            min-width="150px"            
-            >
+          </el-table-column>
+          <el-table-column label="备注" align="center" prop="note" min-width="200px"/>
+          <el-table-column label="激活时间" align="center" prop="activeAt" min-width="180px">
             <template #default="scope">
                 <span>{{ proxy.parseTime(scope.row.activeAt, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
             </template>
           </el-table-column>          
-          <el-table-column label="生成时间" align="center" prop="createdAt"
-            min-width="150px"            
-            >
+          <el-table-column label="生成时间" align="center" prop="createdAt" min-width="180px">
             <template #default="scope">
                 <span>{{ proxy.parseTime(scope.row.createdAt, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
             </template>
           </el-table-column>        
-          <el-table-column label="操作" align="center" class-name="small-padding" min-width="200px" fixed="right">
-            <template #default="scope">            
-              <el-button
-                type="primary"
-                link
-                @click="handleView(scope.row)"
-                v-auth="'api/v1/appsource/asRedeemCode/get'"
-              ><el-icon><ele-View /></el-icon>详情</el-button>              
+          <el-table-column label="操作" align="center" class-name="operation-container small-padding" min-width="80px" fixed="right">
+            <template #default="scope">
               <el-button
                 type="primary"
                 link
@@ -296,7 +279,8 @@ const state = reactive<AsRedeemCodeTableDataState>({
             active: undefined,            
             activeAt: undefined,            
             createdBy: undefined,            
-            createdAt: undefined,            
+            createdAt: undefined,
+            note: undefined,
             dateRange: []
         },
     },
@@ -352,8 +336,8 @@ const handleSelectionChange = (selection:Array<AsRedeemCodeInfoData>) => {
     single.value = selection.length!=1
     multiple.value = !selection.length
 }
-const handleAdd =  ()=>{
-    addRef.value.openDialog()
+const handleAdd = ()=>{
+  addRef.value.openDialog()
 }
 const handleUpdate = (row: AsRedeemCodeTableColumns|null) => {
     if(!row){

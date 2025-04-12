@@ -3,7 +3,7 @@
     <el-card shadow="hover">
         <div class="install-signPlatform-search mb15">
             <el-form :model="tableData.param" ref="queryRef" :inline="true" label-width="100px">
-            <el-row>                
+            <el-row class="search-fields-container">                
                 <el-col :span="8" class="colBlock">
                   <el-form-item label="ID" prop="id">
                     <el-input
@@ -86,6 +86,16 @@
                         placeholder="选择创建时间"                    
                     ></el-date-picker>
                   </el-form-item>
+                </el-col>                
+                <el-col :span="8" :class="showAll ? 'colBlock' : 'colNone'">
+                  <el-form-item label="权重" prop="weigh">
+                    <el-input
+                        v-model="tableData.param.weigh"
+                        placeholder="请输入权重"
+                        clearable                        
+                        @keyup.enter.native="signPlatformList"
+                    />                    
+                  </el-form-item>
                 </el-col>            
                 <el-col :span="8" :class="showAll ? 'colBlock' : 'colNone'">
                   <el-form-item>
@@ -100,7 +110,7 @@
                 </el-col>            
               </el-row>
             </el-form>
-            <el-row :gutter="10" class="mb8">
+            <el-row :gutter="10" class="btn-container">
               <el-col :span="1.5">
                 <el-button
                   type="primary"
@@ -158,18 +168,14 @@
           min-width="150px"          
           >
               <template #default="scope">
-                  <el-switch  :active-value=1
-                              :inactive-value=0
-                              v-model="scope.row.openSsl" class="ml-2" @change="changeOpenSsl(scope.row)"/>
+                  <el-switch  :active-value=1 :inactive-value=0 v-model="scope.row.openSsl" class="ml-2" @change="changeOpenSsl(scope.row)"/>
               </template>
           </el-table-column>          
           <el-table-column label="启用" align="center" prop="status"
           min-width="150px"          
           >
               <template #default="scope">
-                  <el-switch  :active-value=1
-                              :inactive-value=0
-                              v-model="scope.row.status" class="ml-2" @change="changeStatus(scope.row)"/>
+                  <el-switch  :active-value=1 :inactive-value=0 v-model="scope.row.status" class="ml-2" @change="changeStatus(scope.row)"/>
               </template>
           </el-table-column>          
           <el-table-column label="对接Token" align="center" prop="token"
@@ -181,15 +187,12 @@
             <template #default="scope">
                 <span>{{ proxy.parseTime(scope.row.createdAt, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
             </template>
-          </el-table-column>        
-          <el-table-column label="操作" align="center" class-name="small-padding" min-width="200px" fixed="right">
+          </el-table-column>          
+          <el-table-column label="权重" align="center" prop="weigh"
+            min-width="150px"            
+             />        
+          <el-table-column label="操作" align="center" class-name="operation-container small-padding" min-width="80px" fixed="right">
             <template #default="scope">            
-              <el-button
-                type="primary"
-                link
-                @click="handleView(scope.row)"
-                v-auth="'api/v1/install/signPlatform/get'"
-              ><el-icon><ele-View /></el-icon>详情</el-button>              
               <el-button
                 type="primary"
                 link
@@ -290,6 +293,7 @@ const state = reactive<SignPlatformTableDataState>({
             status: undefined,            
             token: undefined,            
             createdAt: undefined,            
+            weigh: undefined,            
             dateRange: []
         },
     },

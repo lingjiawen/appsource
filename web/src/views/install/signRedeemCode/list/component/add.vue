@@ -1,9 +1,9 @@
 <template>
-  <div class="appsource-asRedeemCode-add">
+  <div class="install-asRedeemCode-add">
     <!-- 添加或修改卡密管理对话框 -->
     <el-dialog v-model="isShowDialog" width="800px" :close-on-click-modal="false" :destroy-on-close="true">
       <template #header>
-        <div v-drag="['.appsource-asRedeemCode-add .el-dialog', '.appsource-asRedeemCode-add .el-dialog__header']">
+        <div v-drag="['.install-asRedeemCode-add .el-dialog', '.install-asRedeemCode-add .el-dialog__header']">
           {{ (!formData.id || formData.id == 0 ? '添加' : '修改') + '卡密管理' }}
         </div>
       </template>

@@ -245,7 +245,7 @@ const resetForm = ()=>{
     deviceType: '' ,    
     pool: '' ,    
     apiPlatform: '' ,    
-    note: undefined,    
+    note: '',
     apiWarrantyType: '' ,    
     banned: false ,    
     active: false ,    

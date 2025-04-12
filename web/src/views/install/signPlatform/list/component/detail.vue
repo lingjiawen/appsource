@@ -75,6 +75,14 @@
             </template>
             {{ proxy.parseTime(formData.createdAt, '{y}-{m}-{d} {h}:{i}:{s}') }}
           </el-descriptions-item>        
+          <el-descriptions-item :span="1">            
+              <template #label>
+                <div class="cell-item">
+                  权重
+                </div>
+              </template>
+              {{ formData.weigh }}            
+          </el-descriptions-item>        
       </el-descriptions>
     </el-drawer>
   </div>
@@ -112,6 +120,7 @@
       token: undefined,      
       createdAt: undefined,      
       updatedAt: undefined,      
+      weigh: undefined,      
     },
     // 表单校验
     rules: {      
@@ -166,6 +175,7 @@
       token: undefined,      
       createdAt: undefined,      
       updatedAt: undefined,      
+      weigh: undefined,      
     }
   };  
 </script>

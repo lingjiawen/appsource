@@ -43,6 +43,18 @@ export function delSignRedeemCode(ids:number[]) {
     }
   })
 }
+// 签名卡密强制修改
+export function changeSignRedeemCodeForce(id:number,force:number) {
+  const data = {
+    id,
+    force
+  }
+  return request({
+    url: '/api/v1/install/signRedeemCode/changeForce',
+    method: 'put',
+    data:data
+  })
+}
 // 签名卡密禁用修改
 export function changeSignRedeemCodeBanned(id:number,banned:number) {
   const data = {

@@ -7,6 +7,7 @@ export interface SignPlatformTableColumns {
     status:number;  // 启用    
     token:string;  // 对接Token    
     createdAt:string;  // 创建时间    
+    weigh:number;  // 权重    
 }
 
 
@@ -20,6 +21,7 @@ export interface SignPlatformInfoData {
     token:string|undefined; // 对接Token    
     createdAt:string|undefined; // 创建时间    
     updatedAt:string|undefined; // 修改时间    
+    weigh:number|undefined; // 权重    
 }
 
 
@@ -40,6 +42,7 @@ export interface SignPlatformTableDataState {
             status: number|undefined;            
             token: string|undefined;            
             createdAt: string|undefined;            
+            weigh: number|undefined;            
             dateRange: string[];
         };
     };

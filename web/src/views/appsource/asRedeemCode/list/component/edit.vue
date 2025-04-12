@@ -20,7 +20,10 @@
               :value="dict.value"
             >{{dict.label }}</el-radio>
           </el-radio-group>
-        </el-form-item>        
+        </el-form-item>
+        <el-form-item label="备注" prop="note">
+          <el-input v-model="formData.note" type="textarea" placeholder="请输入备注" />
+        </el-form-item>
         <el-form-item label="是否激活" prop="active">
           <el-switch  v-model="formData.active" class="ml-2" />
         </el-form-item>        
@@ -80,7 +83,8 @@ const state = reactive<AsRedeemCodeEditState>({
     id: undefined,    
     code: undefined,    
     udid: undefined,    
-    type: undefined,    
+    type: undefined,
+    note: undefined,
     active: false ,    
     activeAt: undefined,    
     createdBy: undefined,    
@@ -155,7 +159,8 @@ const resetForm = ()=>{
     id: undefined,    
     code: undefined,    
     udid: undefined,    
-    type: '' ,    
+    type: '',
+    note: '',
     active: false ,    
     activeAt: undefined,    
     createdBy: undefined,    
