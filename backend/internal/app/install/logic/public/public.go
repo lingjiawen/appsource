@@ -11,6 +11,7 @@ import (
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gfile"
+	"github.com/gogf/gf/v2/os/grpool"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
@@ -32,6 +33,7 @@ import (
 	"path"
 	"path/filepath"
 	"strconv"
+	"sync"
 )
 
 func init() {
@@ -117,7 +119,120 @@ func (s *sPublic) Install(ctx context.Context, req *model.ApplicationInstallReq)
 			liberr.ErrIsNil(ctx, err, "查询设备失败")
 			// 没有设备返回错误
 			if device == nil {
-				liberr.ErrIsNil(ctx, errors.New("该UDID暂无可用证书, 请填写卡密"))
+				// 查询接口是否有历史设备
+				pool := grpool.New(3)
+				var mu sync.Mutex     // 保护共享数据的互斥锁
+				var wg sync.WaitGroup // 用于等待所有任务完成
+
+				var results []*model.GetDeviceData
+				var resultErrors []error
+
+				enabledPlatforms, err := getEnabledPlatforms(ctx)
+				if err != nil {
+					liberr.ErrIsNil(ctx, err, "获取平台信息失败")
+				}
+				for _, enabledPlatform := range enabledPlatforms {
+					wg.Add(1)
+					pool.Add(ctx, func(ctx context.Context) {
+						defer wg.Done()
+						// 获取平台信息
+						apiUrl := gconv.String(enabledPlatform["url"])
+						platformToken := gconv.String(enabledPlatform["token"])
+						platformID := gconv.Int(enabledPlatform["platform"])
+
+						requestData := g.Map{
+							"udid":  req.UDID,
+							"token": platformToken,
+						}
+
+						// 调用接口
+						response, err := RequestPost(apiUrl, requestData)
+						if err != nil {
+							mu.Lock()
+							resultErrors = append(resultErrors, fmt.Errorf("请求接口失败: %s", err.Error()))
+							mu.Unlock()
+							return
+						}
+
+						// 校验 JSON
+						if !json.Valid(response) {
+							mu.Lock()
+							resultErrors = append(resultErrors, fmt.Errorf("无效的 JSON 响应: %s", string(response)))
+							mu.Unlock()
+							return
+						}
+
+						// 解析 JSON
+						var result *model.GetDeviceDataResp
+						err = json.Unmarshal(response, &result)
+						if err != nil {
+							mu.Lock()
+							resultErrors = append(resultErrors, fmt.Errorf("解析 JSON 失败: %s", err.Error()))
+							mu.Unlock()
+							return
+						}
+
+						// 判断是否成功
+						resultCode := gconv.Int(result.Code)
+						if resultCode != 0 {
+							liberr.ErrIsNil(ctx, errors.New(result.Msg))
+						}
+
+						mu.Lock()
+						result.Data.PlatformId = platformID
+						results = append(results, result.Data)
+						mu.Unlock()
+					})
+				}
+
+				wg.Wait()
+
+				// 打印请求错误
+				if len(resultErrors) > 0 {
+					for _, err := range resultErrors {
+						g.Log().Error(ctx, err.Error())
+					}
+				}
+
+				// 打印请求结果
+				g.Log().Debug(ctx, "请求结果: ", results)
+
+				// 检查是否有可用结果
+				if len(results) == 0 {
+					liberr.ErrIsNil(ctx, errors.New("该UDID暂无可用证书, 请填写卡密"))
+				} else {
+					// 遍历结果, 选择第一个可用的
+					for _, result := range results {
+						if result.Status == "normal" && result.Mobileprovision != "" {
+							device = &model.SignDeviceInfoRes{
+								Udid:            req.UDID,
+								ApiPlatform:     result.PlatformId,
+								Name:            gconv.String(result.Name),
+								CertId:          gconv.String(result.Id),
+								P12:             gconv.String(result.P12),
+								Mobileprovision: gconv.String(result.Mobileprovision),
+								AddTime:         gconv.Uint64(result.AddTime),
+								P12Password:     gconv.String(result.P12Password),
+								Model:           gconv.String(result.Model),
+								ExpireTime:      gconv.Uint64(result.ExpireTime),
+								SerialNumber:    "", // 通过证书检测
+								AccountType:     gconv.Int(result.Type),
+								WarrantyType:    result.Warranty,
+								DeviceType:      "iphone",
+								Status:          result.Status,
+								Active:          1,
+								Pool:            gconv.Int(result.Pool),
+							}
+							// 插入数据库
+							_, err = dao.SignDevice.Ctx(ctx).Insert(device)
+							break
+						}
+					}
+
+					if device == nil {
+						liberr.ErrIsNil(ctx, errors.New("该UDID暂无可用证书, 请填写卡密"))
+					}
+				}
 			}
 
 			// 获取最新证书
@@ -163,7 +278,7 @@ func (s *sPublic) Install(ctx context.Context, req *model.ApplicationInstallReq)
 
 					apiPlatform := redeemCode.ApiPlatform
 					// 获取平台信息
-					apiUrl, platformToken := getPlatformUrlAndToken(ctx, apiPlatform)
+					apiUrl, platformToken := getPlatformUrlAndToken(ctx, apiPlatform, "/api/v1/public/device/add")
 					accountType := redeemCode.AccountType
 					deviceType := redeemCode.DeviceType
 					pool := redeemCode.Pool
@@ -265,7 +380,7 @@ func (s *sPublic) Install(ctx context.Context, req *model.ApplicationInstallReq)
 				apiPlatform := redeemCode.ApiPlatform
 
 				// 获取平台信息
-				apiUrl, platformToken := getPlatformUrlAndToken(ctx, apiPlatform)
+				apiUrl, platformToken := getPlatformUrlAndToken(ctx, apiPlatform, "/api/v1/public/device/add")
 
 				accountType := redeemCode.AccountType
 				deviceType := redeemCode.DeviceType
@@ -566,10 +681,36 @@ func savePlistInfo(ctx context.Context, plistInfo model.InstallPlist) (uuid *str
 	return &cacheKey, nil
 }
 
-func getPlatformUrlAndToken(ctx context.Context, apiPlatform int) (string, string) {
+func getEnabledPlatforms(ctx context.Context) (platforms []g.Map, err error) {
+	var platformsInfo []*model.SignPlatformInfoRes
+	err = g.Try(ctx, func(ctx context.Context) {
+		err = dao.SignPlatform.Ctx(ctx).
+			Where("status", 1).
+			Scan(&platformsInfo)
+		liberr.ErrIsNil(ctx, err, "查询平台失败")
+
+		if len(platformsInfo) == 0 {
+			liberr.ErrIsNil(ctx, errors.New("没有可用的平台"))
+		}
+
+		// 获取平台信息
+		platforms = []g.Map{}
+		for _, platform := range platformsInfo {
+			platformUrl, token := getPlatformUrlAndToken(ctx, int(platform.Id), "/api/v1/public/device/get")
+			platforms = append(platforms, g.Map{
+				"platform": platform.Id,
+				"url":      platformUrl,
+				"token":    token,
+			})
+		}
+	})
+	return
+}
+
+func getPlatformUrlAndToken(ctx context.Context, apiPlatform int, apiPath string) (string, string) {
 	var platform *model.SignPlatformInfoRes
 	err := dao.SignPlatform.Ctx(ctx).
-		Where("id", apiPlatform).
+		WherePri(apiPlatform).
 		Scan(&platform)
 	liberr.ErrIsNil(ctx, err, "查询平台失败")
 
@@ -582,9 +723,6 @@ func getPlatformUrlAndToken(ctx context.Context, apiPlatform int) (string, strin
 	if platform.Status == 0 {
 		liberr.ErrIsNil(ctx, errors.New("出书平台未启用"))
 	}
-
-	// 构造请求 URL
-	apiPath := "/api/v1/public/device/add"
 
 	// 解析基础 URL
 	baseURL := platform.BaseUrl

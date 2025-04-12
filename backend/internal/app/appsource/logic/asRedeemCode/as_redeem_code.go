@@ -80,6 +80,7 @@ func (s *sAsRedeemCode) List(ctx context.Context, req *model.AsRedeemCodeSearchR
 				Code:      v.Code,
 				Udid:      v.Udid,
 				Type:      v.Type,
+				Note:      v.Note,
 				Active:    v.Active,
 				ActiveAt:  v.ActiveAt,
 				CreatedAt: v.CreatedAt,
@@ -170,6 +171,7 @@ func (s *sAsRedeemCode) Import(ctx context.Context, file *ghttp.UploadFile) (err
 				CreatedAt: gconv.GTime(d[7]),
 				UpdatedAt: gconv.GTime(d[8]),
 				DeletedAt: gconv.GTime(d[9]),
+				Note:      d[10],
 			}
 		}
 		if len(data) > 0 {
@@ -208,6 +210,7 @@ func (s *sAsRedeemCode) Add(ctx context.Context, req *model.AsRedeemCodeAddReq) 
 			codes = append(codes, do.AsRedeemCode{
 				Code:      code,
 				Type:      req.Type,
+				Note:      req.Note,
 				CreatedBy: userID,
 			})
 		}
@@ -227,6 +230,7 @@ func (s *sAsRedeemCode) Edit(ctx context.Context, req *model.AsRedeemCodeEditReq
 			Type:      req.Type,
 			Active:    req.Active,
 			ActiveAt:  req.ActiveAt,
+			Note:      req.Note,
 			UpdatedBy: systemService.Context().GetUserId(ctx),
 		})
 		liberr.ErrIsNil(ctx, err, "修改失败")

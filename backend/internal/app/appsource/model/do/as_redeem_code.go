@@ -1,6 +1,6 @@
 // ==========================================================================
 // GFast自动生成model entity操作代码。
-// 生成日期：2025-02-16 21:29:59
+// 生成日期：2025-04-09 21:34:25
 // 生成路径: internal/app/appsource/model/entity/as_redeem_code.go
 // 生成人：smithy
 // desc:卡密管理
@@ -28,4 +28,5 @@ type AsRedeemCode struct {
 	CreatedAt  *gtime.Time `orm:"created_at" json:"createdAt"` // 生成时间
 	UpdatedAt  *gtime.Time `orm:"updated_at" json:"updatedAt"` // 修改时间
 	DeletedAt  *gtime.Time `orm:"deleted_at" json:"deletedAt"` // 删除时间
+	Note       interface{} `orm:"note" json:"note"`            // 备注
 }

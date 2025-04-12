@@ -1,6 +1,6 @@
 // ==========================================================================
 // GFast自动生成service操作代码。
-// 生成日期：2025-02-16 21:29:59
+// 生成日期：2025-04-09 21:34:25
 // 生成路径: internal/app/appsource/service/as_redeem_code.go
 // 生成人：smithy
 // desc:卡密管理
@@ -24,6 +24,7 @@ type IAsRedeemCode interface {
 	Add(ctx context.Context, req *model.AsRedeemCodeAddReq) (err error)
 	Edit(ctx context.Context, req *model.AsRedeemCodeEditReq) (err error)
 	Delete(ctx context.Context, Id []uint) (err error)
+	// 卡密管理是否激活修改（状态）
 	ChangeActive(ctx context.Context, id uint, active int) (err error)
 }
 

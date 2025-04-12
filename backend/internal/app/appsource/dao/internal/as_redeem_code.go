@@ -1,6 +1,6 @@
 // ==========================================================================
 // GFast自动生成dao internal操作代码。
-// 生成日期：2025-02-16 21:29:59
+// 生成日期：2025-04-09 21:34:25
 // 生成路径: internal/app/appsource/dao/internal/as_redeem_code.go
 // 生成人：smithy
 // desc:卡密管理
@@ -36,6 +36,7 @@ type AsRedeemCodeColumns struct {
 	CreatedAt string // 生成时间
 	UpdatedAt string // 修改时间
 	DeletedAt string // 删除时间
+	Note      string // 备注
 }
 
 var asRedeemCodeColumns = AsRedeemCodeColumns{
@@ -50,6 +51,7 @@ var asRedeemCodeColumns = AsRedeemCodeColumns{
 	CreatedAt: "created_at",
 	UpdatedAt: "updated_at",
 	DeletedAt: "deleted_at",
+	Note:      "note",
 }
 
 // NewAsRedeemCodeDao creates and returns a new DAO object for table data access.

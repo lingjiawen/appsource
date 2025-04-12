@@ -1,12 +1,3 @@
-// ==========================================================================
-// GFast自动生成controller操作代码。
-// 生成日期：2025-02-16 20:02:59
-// 生成路径: internal/app/appsource/controller/as_redeem_code.go
-// 生成人：smithy
-// desc:卡密管理
-// company:云南奇讯科技有限公司
-// ==========================================================================
-
 package controller
 
 import (
@@ -102,6 +93,7 @@ func (c *asRedeemCodeController) Export(ctx context.Context, req *appsource.AsRe
 				createdBy,
 				//修改人
 				updatedBy,
+				v.Note,
 				v.CreatedAt.Format("Y-m-d H:i:s"),
 				v.UpdatedAt.Format("Y-m-d H:i:s"),
 				v.DeletedAt.Format("Y-m-d H:i:s"),

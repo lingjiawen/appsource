@@ -1,12 +1,3 @@
-// ==========================================================================
-// GFast自动生成model操作代码。
-// 生成日期：2025-02-16 21:29:59
-// 生成路径: internal/app/appsource/model/as_redeem_code.go
-// 生成人：smithy
-// desc:卡密管理
-// company:云南奇讯科技有限公司
-// ==========================================================================
-
 package model
 
 import (
@@ -33,6 +24,7 @@ type AsRedeemCodeInfoRes struct {
 	CreatedAt   *gtime.Time              `orm:"created_at" json:"createdAt" dc:"生成时间"` // 生成时间
 	UpdatedAt   *gtime.Time              `orm:"updated_at" json:"updatedAt" dc:"修改时间"` // 修改时间
 	DeletedAt   *gtime.Time              `orm:"deleted_at" json:"deletedAt" dc:"删除时间"` // 删除时间
+	Note        string                   `orm:"note" json:"note" dc:"备注"`              // 备注
 }
 
 type AsRedeemCodeListRes struct {
@@ -40,6 +32,7 @@ type AsRedeemCodeListRes struct {
 	Code      string      `json:"code" dc:"兑换码"`
 	Udid      string      `json:"udid" dc:"设备码"`
 	Type      int         `json:"type" dc:"类型"`
+	Note      string      `json:"note" dc:"备注"`
 	Active    int         `json:"active" dc:"是否激活"`
 	ActiveAt  *gtime.Time `json:"activeAt" dc:"激活时间"`
 	CreatedAt *gtime.Time `json:"createdAt" dc:"生成时间"`
@@ -69,6 +62,7 @@ type AsRedeemCodeAddReq struct {
 	Prefix   string `p:"prefix"  dc:"前缀"`
 	Quantity int    `p:"quantity"  dc:"数量"`
 	Type     int    `p:"type"  dc:"类型"`
+	Note     string `p:"note"  dc:"备注"`
 }
 
 // AsRedeemCodeEditReq 修改操作请求参数
@@ -79,5 +73,6 @@ type AsRedeemCodeEditReq struct {
 	Type      int         `p:"type"  dc:"类型"`
 	Active    int         `p:"active"  dc:"是否激活"`
 	ActiveAt  *gtime.Time `p:"activeAt"  dc:"激活时间"`
+	Note      string      `p:"note"  dc:"备注"`
 	UpdatedBy uint64
 }

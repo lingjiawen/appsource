@@ -4527,11 +4527,14 @@ VALUES (17, '加密', 'appsource.encryption', '0', 1, 'switch', 0, 'appsource', 
 
 -- 备案号
 INSERT INTO `sys_config`
-VALUES (18, 'ICP备案号', 'install.frontend.icp', '粤ICP备xxxxxxxxxx号', 1, 'string', 0, 'install.frontend', 1, 0, '', NULL, NULL);
+VALUES (18, 'ICP备案号', 'install.frontend.icp', '粤ICP备xxxxxxxxxx号', 1, 'string', 0, 'install.frontend', 1, 0, '',
+        NULL, NULL);
 INSERT INTO `sys_config`
-VALUES (19, '增值电信许可证', 'install.frontend.vats', '粤B2-xxxxxx', 1, 'string', 0, 'install.frontend', 1, 0, '', NULL, NULL);
+VALUES (19, '增值电信许可证', 'install.frontend.vats', '粤B2-xxxxxx', 1, 'string', 0, 'install.frontend', 1, 0, '',
+        NULL, NULL);
 INSERT INTO `sys_config`
-VALUES (20, '公网安备', 'install.frontend.security', '粤公网安备xxxxxxxxxxxxxx号', 1, 'string', 0, 'install.frontend', 1, 0, '', NULL,
+VALUES (20, '公网安备', 'install.frontend.security', '粤公网安备xxxxxxxxxxxxxx号', 1, 'string', 0, 'install.frontend',
+        1, 0, '', NULL,
         NULL);
 
 -- 名称
@@ -4551,11 +4554,13 @@ VALUES (23, '图标暗黑', 'install.frontend.iconDarkUrl',
 
 -- 标题
 INSERT INTO `sys_config`
-VALUES (24, '联系标题', 'install.frontend.contact', '联系客服', 1, 'string', 0, 'install.frontend', 1, 0, '', NULL, NULL);
+VALUES (24, '联系标题', 'install.frontend.contact', '联系客服', 1, 'string', 0, 'install.frontend', 1, 0, '', NULL,
+        NULL);
 
 -- 标题链接
 INSERT INTO `sys_config`
-VALUES (25, '联系链接', 'install.frontend.contactUrl', 'https://baidu.com', 1, 'string', 0, 'install.frontend', 1, 0, '', NULL, NULL);
+VALUES (25, '联系链接', 'install.frontend.contactUrl', 'https://baidu.com', 1, 'string', 0, 'install.frontend', 1, 0,
+        '', NULL, NULL);
 
 -- 公告
 INSERT INTO `sys_config`
@@ -4565,11 +4570,13 @@ VALUES (26, '公告', 'install.frontend.notice',
 
 -- 购买地址
 INSERT INTO `sys_config`
-VALUES (27, '购买地址', 'install.frontend.buyUrl', 'https://baidu.com', 1, 'string', 0, 'install.frontend', 1, 0, '', NULL, NULL);
+VALUES (27, '购买地址', 'install.frontend.buyUrl', 'https://baidu.com', 1, 'string', 0, 'install.frontend', 1, 0, '',
+        NULL, NULL);
 
 -- 弹窗HTML
 INSERT INTO `sys_config`
-VALUES (28, '弹窗html', 'install.frontend.popupHtml', '<p>弹窗文字1</p><p>弹窗文字2</p>', 1, 'textarea', 0, 'install.frontend', 1, 0, '',
+VALUES (28, '弹窗html', 'install.frontend.popupHtml', '<p>弹窗文字1</p><p>弹窗文字2</p>', 1, 'textarea', 0,
+        'install.frontend', 1, 0, '',
         NULL, NULL);
 
 -- 企业证书
@@ -6998,6 +7005,7 @@ CREATE TABLE `as_redeem_code`
     `type`       TINYINT(1) DEFAULT 3 COMMENT '类型',
     `active`     TINYINT(1) DEFAULT 0 COMMENT '激活',
     `active_at`  datetime                                                      DEFAULT NULL COMMENT '激活时间',
+    `note`       text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '备注',
     `created_by` int unsigned DEFAULT '0' COMMENT '创建人',
     `updated_by` int unsigned DEFAULT '0' COMMENT '修改人',
     `created_at` datetime                                                      DEFAULT NULL COMMENT '创建时间',
@@ -7041,28 +7049,28 @@ DROP TABLE IF EXISTS `sign_redeem_code`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sign_redeem_code`
 (
-    `id`            int unsigned NOT NULL AUTO_INCREMENT,
-    `code`          varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '兑换码',
-    `udid`          varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '设备码',
-    `cert_id`       varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '证书标识',
-    `account_type`  TINYINT(1) DEFAULT 3 COMMENT '时效类型',
-    `warranty_type` TINYINT(1) DEFAULT 3 COMMENT '售后类型',
-    `device_type`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT 'iphone' COMMENT '设备类型',
+    `id`                int unsigned NOT NULL AUTO_INCREMENT,
+    `code`              varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '兑换码',
+    `udid`              varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '设备码',
+    `cert_id`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '证书标识',
+    `account_type`      TINYINT(1) DEFAULT 3 COMMENT '时效类型',
+    `warranty_type`     TINYINT(1) DEFAULT 3 COMMENT '售后类型',
+    `device_type`       varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT 'iphone' COMMENT '设备类型',
     `api_platform`      TINYINT(1) DEFAULT 1 COMMENT '对接平台',
     `api_warranty_type` TINYINT(1) DEFAULT 3 COMMENT '对接售后类型',
-    `pool`          TINYINT(1) DEFAULT 3 COMMENT '出书方式',
-    `note`          text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '备注',
-    `banned`        TINYINT(1) DEFAULT 0 COMMENT '禁用',
-    `active`        TINYINT(1) DEFAULT 0 COMMENT '激活',
-    `active_at`     datetime                                                      DEFAULT NULL COMMENT '激活时间',
-    `created_by`    int unsigned DEFAULT '0' COMMENT '创建人',
-    `updated_by`    int unsigned DEFAULT '0' COMMENT '修改人',
-    `created_at`    datetime                                                      DEFAULT NULL COMMENT '创建时间',
-    `updated_at`    datetime                                                      DEFAULT NULL COMMENT '修改时间',
+    `pool`              TINYINT(1) DEFAULT 3 COMMENT '出书方式',
+    `note`              text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '备注',
+    `banned`            TINYINT(1) DEFAULT 0 COMMENT '禁用',
+    `active`            TINYINT(1) DEFAULT 0 COMMENT '激活',
+    `active_at`         datetime                                                      DEFAULT NULL COMMENT '激活时间',
+    `created_by`        int unsigned DEFAULT '0' COMMENT '创建人',
+    `updated_by`        int unsigned DEFAULT '0' COMMENT '修改人',
+    `created_at`        datetime                                                      DEFAULT NULL COMMENT '创建时间',
+    `updated_at`        datetime                                                      DEFAULT NULL COMMENT '修改时间',
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE KEY `code` (`code`) USING BTREE,
     UNIQUE KEY `cert_id` (`cert_id`) USING BTREE,
-    KEY             `udid` (`udid`) USING BTREE
+    KEY                 `udid` (`udid`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='签名卡密';
 
 -- 设备管理
@@ -7084,7 +7092,7 @@ CREATE TABLE `sign_device`
     `expire_time`       bigint unsigned DEFAULT '0' COMMENT '过期时间',
     `redeem_code`       varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '兑换卡密',
     `serial_number`     varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '序列号',
-    `status`            varchar(30) NOT NULL DEFAULT 'normal' COMMENT '状态',
+    `status`            varchar(30) NOT NULL                                          DEFAULT 'normal' COMMENT '状态',
     `account_type`      TINYINT(1) DEFAULT 3 COMMENT '时效类型',
     `warranty_type`     TINYINT(1) DEFAULT 3 COMMENT '售后类型',
     `device_type`       varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT 'iphone' COMMENT '设备类型',
@@ -7099,49 +7107,100 @@ CREATE TABLE `sign_device`
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE KEY `cert_id` (`cert_id`) USING BTREE,
     UNIQUE KEY `redeem_code` (`redeem_code`) USING BTREE
-    UNIQUE KEY `device_id` (`device_id`) USING BTREE
+        UNIQUE KEY `device_id` (`device_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='设备管理';
 
 
 -- 设备类型
-INSERT INTO `sys_dict_type` VALUES (56, '设备类型', 'apple_device_type', 1, 31, 0, 'iphone/ipad', '2023-12-28 15:48:03', '2023-12-28 15:48:03');
-INSERT INTO `sys_dict_data` VALUES (133, 0, '手机', 'iphone', 'apple_device_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:48:54', '2023-12-28 15:52:24');
-INSERT INTO `sys_dict_data` VALUES (134, 0, '平板', 'ipad', 'apple_device_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35', '2023-12-28 15:52:35');
+INSERT INTO `sys_dict_type`
+VALUES (56, '设备类型', 'apple_device_type', 1, 31, 0, 'iphone/ipad', '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sys_dict_data`
+VALUES (133, 0, '手机', 'iphone', 'apple_device_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:48:54',
+        '2023-12-28 15:52:24');
+INSERT INTO `sys_dict_data`
+VALUES (134, 0, '平板', 'ipad', 'apple_device_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35',
+        '2023-12-28 15:52:35');
 
 -- 账号类型/时效类型
-INSERT INTO `sys_dict_type` VALUES (57, '账号类型', 'apple_account_type', 1, 31, 0, '秒出:0/预约:1', '2023-12-28 15:48:03', '2023-12-28 15:48:03');
-INSERT INTO `sys_dict_data` VALUES (135, 0, '秒出', '0', 'apple_account_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:48:54', '2023-12-28 15:52:24');
-INSERT INTO `sys_dict_data` VALUES (136, 0, '预约', '1', 'apple_account_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35', '2023-12-28 15:52:35');
+INSERT INTO `sys_dict_type`
+VALUES (57, '账号类型', 'apple_account_type', 1, 31, 0, '秒出:0/预约:1', '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sys_dict_data`
+VALUES (135, 0, '秒出', '0', 'apple_account_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:48:54',
+        '2023-12-28 15:52:24');
+INSERT INTO `sys_dict_data`
+VALUES (136, 0, '预约', '1', 'apple_account_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35',
+        '2023-12-28 15:52:35');
 
 -- 售后类型
-INSERT INTO `sys_dict_type` VALUES (58, '售后类型', 'apple_warranty_type', 1, 31, 0, '无售后0/标准1/加强2/稳定3/摆烂4/超标准5/高摆6', '2023-12-28 15:48:03', '2023-12-28 15:48:03');
-INSERT INTO `sys_dict_data` VALUES (137, 0, '无售后', '0', 'apple_warranty_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:48:54', '2023-12-28 15:52:24');
-INSERT INTO `sys_dict_data` VALUES (138, 0, '标准版', '1', 'apple_warranty_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35', '2023-12-28 15:52:35');
-INSERT INTO `sys_dict_data` VALUES (139, 0, '加强版', '2', 'apple_warranty_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35', '2023-12-28 15:52:35');
-INSERT INTO `sys_dict_data` VALUES (140, 0, '稳定版', '3', 'apple_warranty_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35', '2023-12-28 15:52:35');
-INSERT INTO `sys_dict_data` VALUES (141, 0, '摆烂版', '4', 'apple_warranty_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35', '2023-12-28 15:52:35');
-INSERT INTO `sys_dict_data` VALUES (142, 0, '超标准', '5', 'apple_warranty_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35', '2023-12-28 15:52:35');
-INSERT INTO `sys_dict_data` VALUES (143, 0, '高摆版', '6', 'apple_warranty_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35', '2023-12-28 15:52:35');
+INSERT INTO `sys_dict_type`
+VALUES (58, '售后类型', 'apple_warranty_type', 1, 31, 0, '无售后0/标准1/加强2/稳定3/摆烂4/超标准5/高摆6',
+        '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sys_dict_data`
+VALUES (137, 0, '无售后', '0', 'apple_warranty_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:48:54',
+        '2023-12-28 15:52:24');
+INSERT INTO `sys_dict_data`
+VALUES (138, 0, '标准版', '1', 'apple_warranty_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35',
+        '2023-12-28 15:52:35');
+INSERT INTO `sys_dict_data`
+VALUES (139, 0, '加强版', '2', 'apple_warranty_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35',
+        '2023-12-28 15:52:35');
+INSERT INTO `sys_dict_data`
+VALUES (140, 0, '稳定版', '3', 'apple_warranty_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35',
+        '2023-12-28 15:52:35');
+INSERT INTO `sys_dict_data`
+VALUES (141, 0, '摆烂版', '4', 'apple_warranty_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35',
+        '2023-12-28 15:52:35');
+INSERT INTO `sys_dict_data`
+VALUES (142, 0, '超标准', '5', 'apple_warranty_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35',
+        '2023-12-28 15:52:35');
+INSERT INTO `sys_dict_data`
+VALUES (143, 0, '高摆版', '6', 'apple_warranty_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35',
+        '2023-12-28 15:52:35');
 
 -- 出书方式
-INSERT INTO `sys_dict_type` VALUES (59, '出书方式', 'apple_pool_type', 1, 31, 0, '公共:0/独立:1/自动:2', '2023-12-28 15:48:03', '2023-12-28 15:48:03');
-INSERT INTO `sys_dict_data` VALUES (144, 0, '公共池', '0', 'apple_pool_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:48:54', '2023-12-28 15:52:24');
-INSERT INTO `sys_dict_data` VALUES (145, 0, '独立池', '1', 'apple_pool_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35', '2023-12-28 15:52:35');
-INSERT INTO `sys_dict_data` VALUES (146, 0, '自动', '2', 'apple_pool_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35', '2023-12-28 15:52:35');
+INSERT INTO `sys_dict_type`
+VALUES (59, '出书方式', 'apple_pool_type', 1, 31, 0, '公共:0/独立:1/自动:2', '2023-12-28 15:48:03',
+        '2023-12-28 15:48:03');
+INSERT INTO `sys_dict_data`
+VALUES (144, 0, '公共池', '0', 'apple_pool_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:48:54',
+        '2023-12-28 15:52:24');
+INSERT INTO `sys_dict_data`
+VALUES (145, 0, '独立池', '1', 'apple_pool_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35',
+        '2023-12-28 15:52:35');
+INSERT INTO `sys_dict_data`
+VALUES (146, 0, '自动', '2', 'apple_pool_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35', '2023-12-28 15:52:35');
 
 
 -- 对接平台
-INSERT INTO `sys_dict_type` VALUES (60, '对接平台', 'api_platform_type', 1, 31, 0, '速云:1/华阳:2/云腾:3', '2023-12-28 15:48:03', '2023-12-28 15:48:03');
-INSERT INTO `sys_dict_data` VALUES (147, 0, '速云', '1', 'api_platform_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:48:54', '2023-12-28 15:52:24');
-INSERT INTO `sys_dict_data` VALUES (148, 0, '华阳', '2', 'api_platform_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35', '2023-12-28 15:52:35');
-INSERT INTO `sys_dict_data` VALUES (149, 0, '云腾', '3', 'api_platform_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35', '2023-12-28 15:52:35');
+INSERT INTO `sys_dict_type`
+VALUES (60, '对接平台', 'api_platform_type', 1, 31, 0, '速云:1/华阳:2/云腾:3', '2023-12-28 15:48:03',
+        '2023-12-28 15:48:03');
+INSERT INTO `sys_dict_data`
+VALUES (147, 0, '速云', '1', 'api_platform_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:48:54',
+        '2023-12-28 15:52:24');
+INSERT INTO `sys_dict_data`
+VALUES (148, 0, '华阳', '2', 'api_platform_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35',
+        '2023-12-28 15:52:35');
+INSERT INTO `sys_dict_data`
+VALUES (149, 0, '云腾', '3', 'api_platform_type', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35',
+        '2023-12-28 15:52:35');
 
 -- 证书状态
-INSERT INTO `sys_dict_type` VALUES (61, '证书状态', 'cert_status', 1, 31, 0, '正常:normal/掉签:hidden/过期:expiration/封号:banned', '2023-12-28 15:48:03', '2023-12-28 15:48:03');
-INSERT INTO `sys_dict_data` VALUES (150, 0, '正常', 'normal', 'cert_status', '', '', 0, 1, 31, 31, '', '2023-12-28 15:48:54', '2023-12-28 15:52:24');
-INSERT INTO `sys_dict_data` VALUES (151, 0, '掉签', 'hidden', 'cert_status', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35', '2023-12-28 15:52:35');
-INSERT INTO `sys_dict_data` VALUES (152, 0, '封号', 'banned', 'cert_status', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35', '2023-12-28 15:52:35');
-INSERT INTO `sys_dict_data` VALUES (153, 0, '过期', 'expiration', 'cert_status', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35', '2023-12-28 15:52:35');
+INSERT INTO `sys_dict_type`
+VALUES (61, '证书状态', 'cert_status', 1, 31, 0, '正常:normal/掉签:hidden/过期:expiration/封号:banned',
+        '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sys_dict_data`
+VALUES (150, 0, '正常', 'normal', 'cert_status', '', '', 0, 1, 31, 31, '', '2023-12-28 15:48:54',
+        '2023-12-28 15:52:24');
+INSERT INTO `sys_dict_data`
+VALUES (151, 0, '掉签', 'hidden', 'cert_status', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35',
+        '2023-12-28 15:52:35');
+INSERT INTO `sys_dict_data`
+VALUES (152, 0, '封号', 'banned', 'cert_status', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35',
+        '2023-12-28 15:52:35');
+INSERT INTO `sys_dict_data`
+VALUES (153, 0, '过期', 'expiration', 'cert_status', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35',
+        '2023-12-28 15:52:35');
 
 
 -- 平台管理
@@ -7150,19 +7209,22 @@ DROP TABLE IF EXISTS `sign_platform`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sign_platform`
 (
-    `id`   INT unsigned NOT NULL AUTO_INCREMENT COMMENT "ID",
-    `name` VARCHAR(50) NOT NULL COMMENT '平台名称',
-    `code` VARCHAR(50) NOT NULL COMMENT '平台标识',
-    `base_url` VARCHAR(255) NOT NULL COMMENT '域名',
-    `open_ssl` TINYINT(1) DEFAULT 1 COMMENT '开启HTTPS',
-    `token` VARCHAR(255) NOT NULL COMMENT '对接Token',
-    `status` TINYINT(1) DEFAULT 1 COMMENT '启用',
+    `id`         INT unsigned NOT NULL AUTO_INCREMENT COMMENT "ID",
+    `name`       VARCHAR(50)  NOT NULL COMMENT '平台名称',
+    `code`       VARCHAR(50)  NOT NULL COMMENT '平台标识',
+    `base_url`   VARCHAR(255) NOT NULL COMMENT '域名',
+    `open_ssl`   TINYINT(1) DEFAULT 1 COMMENT '开启HTTPS',
+    `token`      VARCHAR(255) NOT NULL COMMENT '对接Token',
+    `status`     TINYINT(1) DEFAULT 1 COMMENT '启用',
     `created_at` datetime NULL DEFAULT NULL COMMENT '创建日期',
     `updated_at` datetime NULL DEFAULT NULL COMMENT '修改日期',
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE KEY `code` (`code`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='平台';
 
-INSERT INTO `sign_platform` VALUES (1, '速云', 'sucloud', 'cer.sucloud.com', 1, '', 1, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
-INSERT INTO `sign_platform` VALUES (2, '华阳', 'huayang', 'api.huayang.com', 1, '', 1, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
-INSERT INTO `sign_platform` VALUES (3, '云腾', 'yunteng', 'api.yunteng.com', 1, '', 1, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sign_platform`
+VALUES (1, '速云', 'sucloud', 'cer.sucloud.com', 1, '', 1, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sign_platform`
+VALUES (2, '华阳', 'huayang', 'api.huayang.com', 1, '', 1, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sign_platform`
+VALUES (3, '云腾', 'yunteng', 'api.yunteng.com', 1, '', 1, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
