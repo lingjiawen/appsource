@@ -1,6 +1,6 @@
 // ==========================================================================
 // GFast自动生成model操作代码。
-// 生成日期：2025-03-25 21:39:11
+// 生成日期：2025-04-12 18:50:08
 // 生成路径: internal/app/install/model/sign_platform.go
 // 生成人：smithy
 // desc:平台
@@ -28,6 +28,7 @@ type SignPlatformInfoRes struct {
 	Token      string      `orm:"token" json:"token" dc:"对接Token"`       // 对接Token
 	CreatedAt  *gtime.Time `orm:"created_at" json:"createdAt" dc:"创建时间"` // 创建时间
 	UpdatedAt  *gtime.Time `orm:"updated_at" json:"updatedAt" dc:"修改时间"` // 修改时间
+	Weigh      int         `orm:"weigh" json:"weigh" dc:"权重"`            // 权重
 }
 
 type SignPlatformListRes struct {
@@ -39,6 +40,7 @@ type SignPlatformListRes struct {
 	Status    int         `json:"status" dc:"启用"`
 	Token     string      `json:"token" dc:"对接Token"`
 	CreatedAt *gtime.Time `json:"createdAt" dc:"创建时间"`
+	Weigh     int         `json:"weigh" dc:"权重"`
 }
 
 // SignPlatformSearchReq 分页请求参数
@@ -52,6 +54,7 @@ type SignPlatformSearchReq struct {
 	Status    string `p:"status" v:"status@integer#启用需为整数" dc:"启用"`                               //启用
 	Token     string `p:"token" dc:"对接Token"`                                                     //对接Token
 	CreatedAt string `p:"createdAt" v:"createdAt@datetime#创建时间需为YYYY-MM-DD hh:mm:ss格式" dc:"创建时间"` //创建时间
+	Weigh     string `p:"weigh" v:"weigh@integer#权重需为整数" dc:"权重"`                                 //权重
 }
 
 // SignPlatformSearchRes 列表返回结果
@@ -68,6 +71,7 @@ type SignPlatformAddReq struct {
 	OpenSsl int    `p:"openSsl"  dc:"开启SSL"`
 	Status  int    `p:"status" v:"required#启用不能为空" dc:"启用"`
 	Token   string `p:"token" v:"required#对接Token不能为空" dc:"对接Token"`
+	Weigh   int    `p:"weigh"  dc:"权重"`
 }
 
 // SignPlatformEditReq 修改操作请求参数
@@ -79,4 +83,5 @@ type SignPlatformEditReq struct {
 	OpenSsl int    `p:"openSsl"  dc:"开启SSL"`
 	Status  int    `p:"status" v:"required#启用不能为空" dc:"启用"`
 	Token   string `p:"token" v:"required#对接Token不能为空" dc:"对接Token"`
+	Weigh   int    `p:"weigh"  dc:"权重"`
 }

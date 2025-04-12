@@ -24,9 +24,11 @@ type ISignRedeemCode interface {
 	Add(ctx context.Context, req *model.SignRedeemCodeAddReq) (err error)
 	Edit(ctx context.Context, req *model.SignRedeemCodeEditReq) (err error)
 	Delete(ctx context.Context, Id []uint) (err error)
-	// 签名卡密禁用修改（状态）
+	// ChangeForce 签名卡密强制修改（状态）
+	ChangeForce(ctx context.Context, id uint, force int) (err error)
+	// ChangeBanned 签名卡密禁用修改（状态）
 	ChangeBanned(ctx context.Context, id uint, banned int) (err error)
-	// 签名卡密激活修改（状态）
+	// ChangeActive 签名卡密激活修改（状态）
 	ChangeActive(ctx context.Context, id uint, active int) (err error)
 }
 

@@ -1,6 +1,6 @@
 // ==========================================================================
 // GFast自动生成dao internal操作代码。
-// 生成日期：2025-03-25 21:39:11
+// 生成日期：2025-04-12 18:50:08
 // 生成路径: internal/app/install/dao/internal/sign_platform.go
 // 生成人：smithy
 // desc:平台
@@ -34,6 +34,7 @@ type SignPlatformColumns struct {
 	Token     string // 对接Token
 	CreatedAt string // 创建时间
 	UpdatedAt string // 修改时间
+	Weigh     string // 权重
 }
 
 var signPlatformColumns = SignPlatformColumns{
@@ -46,6 +47,7 @@ var signPlatformColumns = SignPlatformColumns{
 	Token:     "token",
 	CreatedAt: "created_at",
 	UpdatedAt: "updated_at",
+	Weigh:     "weigh",
 }
 
 // NewSignPlatformDao creates and returns a new DAO object for table data access.

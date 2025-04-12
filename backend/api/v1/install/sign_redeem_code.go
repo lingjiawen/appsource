@@ -106,7 +106,19 @@ type SignRedeemCodeDeleteRes struct {
 	commonApi.EmptyRes
 }
 
-// 签名卡密禁用修改（状态）
+// SignRedeemCodeForceSwitchReq 签名卡密强制修改（状态）
+type SignRedeemCodeForceSwitchReq struct {
+	g.Meta `path:"/changeForce" tags:"签名卡密" method:"put" summary:"修改强制"`
+	commonApi.Author
+	Id    uint `p:"id" v:"required#主键必须"`    //通过主键修改
+	Force int  `p:"force" v:"required#状态必须"` //通过主键获取
+}
+
+type SignRedeemCodeForceSwitchRes struct {
+	commonApi.EmptyRes
+}
+
+// SignRedeemCodeBannedSwitchReq 签名卡密禁用修改（状态）
 type SignRedeemCodeBannedSwitchReq struct {
 	g.Meta `path:"/changeBanned" tags:"签名卡密" method:"put" summary:"修改禁用"`
 	commonApi.Author
@@ -117,7 +129,7 @@ type SignRedeemCodeBannedSwitchRes struct {
 	commonApi.EmptyRes
 }
 
-// 签名卡密激活修改（状态）
+// SignRedeemCodeActiveSwitchReq 签名卡密激活修改（状态）
 type SignRedeemCodeActiveSwitchReq struct {
 	g.Meta `path:"/changeActive" tags:"签名卡密" method:"put" summary:"修改激活"`
 	commonApi.Author

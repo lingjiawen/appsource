@@ -28,6 +28,7 @@ type SignRedeemCode struct {
 	ApiPlatform     interface{} `orm:"api_platform" json:"apiPlatform"`          // 对接平台
 	Note            interface{} `orm:"note" json:"note"`                         // 备注
 	ApiWarrantyType interface{} `orm:"api_warranty_type" json:"apiWarrantyType"` // 对接售后类型
+	Force           interface{} `orm:"force" json:"force"`                       // 强制添加
 	Banned          interface{} `orm:"banned" json:"banned"`                     // 禁用
 	Active          interface{} `orm:"active" json:"active"`                     // 激活
 	ActiveAt        *gtime.Time `orm:"active_at" json:"activeAt"`                // 激活时间

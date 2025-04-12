@@ -31,6 +31,7 @@ type SignRedeemCodeInfoRes struct {
 	ApiPlatform     int                      `orm:"api_platform" json:"apiPlatform" dc:"对接平台"`            // 对接平台
 	Note            string                   `orm:"note" json:"note" dc:"备注"`                             // 备注
 	ApiWarrantyType int                      `orm:"api_warranty_type" json:"apiWarrantyType" dc:"对接售后类型"` // 对接售后类型
+	Force           int                      `orm:"force" json:"force" dc:"强制添加"`                         // 强制
 	Banned          int                      `orm:"banned" json:"banned" dc:"禁用"`                         // 禁用
 	Active          int                      `orm:"active" json:"active" dc:"激活"`                         // 激活
 	ActiveAt        *gtime.Time              `orm:"active_at" json:"activeAt" dc:"激活时间"`                  // 激活时间
@@ -55,6 +56,7 @@ type SignRedeemCodeListRes struct {
 	ApiPlatform     int         `json:"apiPlatform" dc:"对接平台"`
 	Note            string      `json:"note" dc:"备注"`
 	ApiWarrantyType int         `json:"apiWarrantyType" dc:"对接售后类型"`
+	Force           int         `json:"force" dc:"强制添加"`
 	Banned          int         `json:"banned" dc:"禁用"`
 	Active          int         `json:"active" dc:"激活"`
 	ActiveAt        *gtime.Time `json:"activeAt" dc:"激活时间"`
@@ -74,6 +76,7 @@ type SignRedeemCodeSearchReq struct {
 	Pool            string `p:"pool" v:"pool@integer#出书方式需为整数" dc:"出书方式"`                               //出书方式
 	ApiPlatform     string `p:"apiPlatform" v:"apiPlatform@integer#对接平台需为整数" dc:"对接平台"`                 //对接平台
 	ApiWarrantyType string `p:"apiWarrantyType" v:"apiWarrantyType@integer#对接售后类型需为整数" dc:"对接售后类型"`     //对接售后类型
+	Force           string `p:"force" v:"force@integer#强制添加需为整数" dc:"强制添加"`                             //强制添加
 	Note            string `p:"note" dc:"备注"`                                                           //备注
 	Banned          string `p:"banned" v:"banned@integer#禁用需为整数" dc:"禁用"`                               //禁用
 	Active          string `p:"active" v:"active@integer#激活需为整数" dc:"激活"`                               //激活
@@ -98,6 +101,7 @@ type SignRedeemCodeAddReq struct {
 	Pool            int    `p:"pool"  dc:"出书方式"`
 	ApiPlatform     int    `p:"apiPlatform"  dc:"对接平台"`
 	ApiWarrantyType int    `p:"apiWarrantyType"  dc:"对接售后类型"`
+	Force           int    `p:"force"  dc:"强制添加"`
 	Note            string `p:"note"  dc:"备注"`
 }
 
@@ -114,6 +118,7 @@ type SignRedeemCodeEditReq struct {
 	ApiPlatform     int         `p:"apiPlatform"  dc:"对接平台"`
 	Note            string      `p:"note"  dc:"备注"`
 	ApiWarrantyType int         `p:"apiWarrantyType"  dc:"对接售后类型"`
+	Force           int         `p:"force"  dc:"强制添加"`
 	Banned          int         `p:"banned"  dc:"禁用"`
 	Active          int         `p:"active"  dc:"激活"`
 	ActiveAt        *gtime.Time `p:"activeAt"  dc:"激活时间"`

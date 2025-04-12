@@ -61,6 +61,9 @@ func (s *sSignRedeemCode) List(ctx context.Context, req *model.SignRedeemCodeSea
 		if req.ApiPlatform != "" {
 			m = m.Where(dao.SignRedeemCode.Columns().ApiPlatform+" = ?", gconv.Int(req.ApiPlatform))
 		}
+		if req.Force != "" {
+			m = m.Where(dao.SignRedeemCode.Columns().Force+" = ?", gconv.Int(req.Force))
+		}
 		if req.ApiWarrantyType != "" {
 			m = m.Where(dao.SignRedeemCode.Columns().ApiWarrantyType+" = ?", gconv.Int(req.ApiWarrantyType))
 		}
@@ -112,6 +115,7 @@ func (s *sSignRedeemCode) List(ctx context.Context, req *model.SignRedeemCodeSea
 				ApiPlatform:     v.ApiPlatform,
 				Note:            v.Note,
 				ApiWarrantyType: v.ApiWarrantyType,
+				Force:           v.Force,
 				Banned:          v.Banned,
 				Active:          v.Active,
 				ActiveAt:        v.ActiveAt,
@@ -151,6 +155,9 @@ func (s *sSignRedeemCode) GetExportData(ctx context.Context, req *model.SignRede
 		}
 		if req.ApiPlatform != "" {
 			m = m.Where(dao.SignRedeemCode.Columns().ApiPlatform+" = ?", gconv.Int(req.ApiPlatform))
+		}
+		if req.Force != "" {
+			m = m.Where(dao.SignRedeemCode.Columns().Force+" = ?", gconv.Int(req.Force))
 		}
 		if req.ApiWarrantyType != "" {
 			m = m.Where(dao.SignRedeemCode.Columns().ApiWarrantyType+" = ?", gconv.Int(req.ApiWarrantyType))
@@ -235,6 +242,7 @@ func (s *sSignRedeemCode) Import(ctx context.Context, file *ghttp.UploadFile) (e
 				CreatedAt:       gconv.GTime(d[15]),
 				UpdatedAt:       gconv.GTime(d[16]),
 				DeletedAt:       gconv.GTime(d[17]),
+				Force:           gconv.Int64(d[18]),
 			}
 		}
 		if len(data) > 0 {
@@ -276,6 +284,7 @@ func (s *sSignRedeemCode) Add(ctx context.Context, req *model.SignRedeemCodeAddR
 				DeviceType:      req.DeviceType,
 				Pool:            req.Pool,
 				ApiPlatform:     req.ApiPlatform,
+				Force:           req.Force,
 				Note:            req.Note,
 				ApiWarrantyType: req.ApiWarrantyType,
 				CreatedBy:       userID,
@@ -303,6 +312,7 @@ func (s *sSignRedeemCode) Edit(ctx context.Context, req *model.SignRedeemCodeEdi
 			DeviceType:      req.DeviceType,
 			Pool:            req.Pool,
 			ApiPlatform:     req.ApiPlatform,
+			Force:           req.Force,
 			Note:            req.Note,
 			ApiWarrantyType: req.ApiWarrantyType,
 			Banned:          req.Banned,
@@ -319,6 +329,18 @@ func (s *sSignRedeemCode) Delete(ctx context.Context, ids []uint) (err error) {
 	err = g.Try(ctx, func(ctx context.Context) {
 		_, err = dao.SignRedeemCode.Ctx(ctx).Delete(dao.SignRedeemCode.Columns().Id+" in (?)", ids)
 		liberr.ErrIsNil(ctx, err, "删除失败")
+	})
+	return
+}
+
+// ChangeForce 签名卡密强制修改（状态）
+func (s *sSignRedeemCode) ChangeForce(ctx context.Context, id uint, force int) (err error) {
+	err = g.Try(ctx, func(ctx context.Context) {
+		_, err = dao.SignRedeemCode.Ctx(ctx).WherePri(id).
+			Update(do.SignRedeemCode{
+				Force: force,
+			})
+		liberr.ErrIsNil(ctx, err, "修改失败")
 	})
 	return
 }

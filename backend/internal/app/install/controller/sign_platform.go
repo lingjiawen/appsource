@@ -1,6 +1,6 @@
 // ==========================================================================
 // GFast自动生成controller操作代码。
-// 生成日期：2025-03-25 21:39:11
+// 生成日期：2025-04-12 18:50:08
 // 生成路径: internal/app/install/controller/sign_platform.go
 // 生成人：smithy
 // desc:平台
@@ -43,7 +43,7 @@ func (c *signPlatformController) Export(ctx context.Context, req *install.SignPl
 		r        = ghttp.RequestFromCtx(ctx)
 		listData []*model.SignPlatformInfoRes
 		//表头
-		tableHead = []interface{}{"ID", "平台名", "平台标识", "域名", "开启SSL", "启用", "对接Token", "创建时间", "修改时间"}
+		tableHead = []interface{}{"ID", "平台名", "平台标识", "域名", "开启SSL", "启用", "对接Token", "创建时间", "修改时间", "权重"}
 		excelData [][]interface{}
 		//字典选项处理
 	)
@@ -71,6 +71,7 @@ func (c *signPlatformController) Export(ctx context.Context, req *install.SignPl
 				v.Token,
 				v.CreatedAt.Format("Y-m-d H:i:s"),
 				v.UpdatedAt.Format("Y-m-d H:i:s"),
+				v.Weigh,
 			}
 			excelData = append(excelData, dt)
 		}
@@ -100,7 +101,7 @@ func (c *signPlatformController) ExcelTemplate(ctx context.Context, req *install
 	var (
 		r = ghttp.RequestFromCtx(ctx)
 		//表头
-		tableHead = []interface{}{"平台名", "平台标识", "域名", "开启SSL", "启用", "对接Token", "创建时间", "修改时间"}
+		tableHead = []interface{}{"平台名", "平台标识", "域名", "开启SSL", "启用", "对接Token", "创建时间", "修改时间", "权重"}
 		excelData = [][]interface{}{tableHead}
 	)
 	//创建excel处理对象

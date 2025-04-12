@@ -1,6 +1,6 @@
 // ==========================================================================
 // GFast自动生成model entity操作代码。
-// 生成日期：2025-03-25 21:39:11
+// 生成日期：2025-04-12 18:50:08
 // 生成路径: internal/app/install/model/entity/sign_platform.go
 // 生成人：smithy
 // desc:平台
@@ -26,4 +26,5 @@ type SignPlatform struct {
 	Token      string      `orm:"token" json:"token"`          // 对接Token
 	CreatedAt  *gtime.Time `orm:"created_at" json:"createdAt"` // 创建时间
 	UpdatedAt  *gtime.Time `orm:"updated_at" json:"updatedAt"` // 修改时间
+	Weigh      int         `orm:"weigh" json:"weigh"`          // 权重
 }

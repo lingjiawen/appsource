@@ -257,7 +257,17 @@ func (c *signRedeemCodeController) Delete(ctx context.Context, req *install.Sign
 	return
 }
 
-// 签名卡密禁用修改（状态）
+// ChangeForce 签名卡密强制修改（状态）
+func (c *signRedeemCodeController) ChangeForce(ctx context.Context, req *install.SignRedeemCodeForceSwitchReq) (res *install.SignRedeemCodeForceSwitchRes, err error) {
+	if !systemService.SysUser().AccessRule(ctx, systemService.Context().GetUserId(ctx), "api/v1/install/signRedeemCode/edit") {
+		err = errors.New("没有修改权限")
+		return
+	}
+	err = service.SignRedeemCode().ChangeForce(ctx, req.Id, req.Force)
+	return
+}
+
+// ChangeBanned 签名卡密禁用修改（状态）
 func (c *signRedeemCodeController) ChangeBanned(ctx context.Context, req *install.SignRedeemCodeBannedSwitchReq) (res *install.SignRedeemCodeBannedSwitchRes, err error) {
 	if !systemService.SysUser().AccessRule(ctx, systemService.Context().GetUserId(ctx), "api/v1/install/signRedeemCode/edit") {
 		err = errors.New("没有修改权限")
@@ -267,7 +277,7 @@ func (c *signRedeemCodeController) ChangeBanned(ctx context.Context, req *instal
 	return
 }
 
-// 签名卡密激活修改（状态）
+// ChangeActive 签名卡密激活修改（状态）
 func (c *signRedeemCodeController) ChangeActive(ctx context.Context, req *install.SignRedeemCodeActiveSwitchReq) (res *install.SignRedeemCodeActiveSwitchRes, err error) {
 	if !systemService.SysUser().AccessRule(ctx, systemService.Context().GetUserId(ctx), "api/v1/install/signRedeemCode/edit") {
 		err = errors.New("没有修改权限")

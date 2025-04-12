@@ -36,6 +36,7 @@ type SignRedeemCodeColumns struct {
 	ApiPlatform     string // 对接平台
 	Note            string // 备注
 	ApiWarrantyType string // 对接售后类型
+	Force           string // 强制
 	Banned          string // 禁用
 	Active          string // 激活
 	ActiveAt        string // 激活时间
@@ -58,6 +59,7 @@ var signRedeemCodeColumns = SignRedeemCodeColumns{
 	ApiPlatform:     "api_platform",
 	Note:            "note",
 	ApiWarrantyType: "api_warranty_type",
+	Force:           "force",
 	Banned:          "banned",
 	Active:          "active",
 	ActiveAt:        "active_at",

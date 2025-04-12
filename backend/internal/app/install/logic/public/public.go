@@ -175,13 +175,16 @@ func (s *sPublic) Install(ctx context.Context, req *model.ApplicationInstallReq)
 						// 判断是否成功
 						resultCode := gconv.Int(result.Code)
 						if resultCode != 0 {
-							liberr.ErrIsNil(ctx, errors.New(result.Msg))
+							resultErrors = append(resultErrors, fmt.Errorf("平台获取设备失败: %s", result.Msg))
+							return
 						}
 
-						mu.Lock()
-						result.Data.PlatformId = platformID
-						results = append(results, result.Data)
-						mu.Unlock()
+						if result.Data.Status == "normal" && result.Data.Mobileprovision != "" {
+							mu.Lock()
+							result.Data.PlatformId = platformID
+							results = append(results, result.Data)
+							mu.Unlock()
+						}
 					})
 				}
 
@@ -273,9 +276,8 @@ func (s *sPublic) Install(ctx context.Context, req *model.ApplicationInstallReq)
 				}
 				// 没有设备返回错误
 				if device == nil {
-					// TODO:本地没有设备, 但是卡密已经使用, 调用接口查一下
+					// 本地没有设备, 但是卡密已经使用
 					// 这种适合手动填写, 指定udid可用
-
 					apiPlatform := redeemCode.ApiPlatform
 					// 获取平台信息
 					apiUrl, platformToken := getPlatformUrlAndToken(ctx, apiPlatform, "/api/v1/public/device/add")
@@ -284,6 +286,7 @@ func (s *sPublic) Install(ctx context.Context, req *model.ApplicationInstallReq)
 					pool := redeemCode.Pool
 					apiWarrantyType := redeemCode.ApiWarrantyType
 					warrantyType := redeemCode.WarrantyType
+					force := redeemCode.Force
 					note := redeemCode.Note
 
 					requestData := g.Map{
@@ -291,6 +294,7 @@ func (s *sPublic) Install(ctx context.Context, req *model.ApplicationInstallReq)
 						"pool":       pool,
 						"warranty":   apiWarrantyType,
 						"deviceType": deviceType,
+						"force":      force,
 						"note":       note,
 						"isBook":     accountType,
 						"token":      platformToken,
@@ -388,12 +392,14 @@ func (s *sPublic) Install(ctx context.Context, req *model.ApplicationInstallReq)
 				apiWarrantyType := redeemCode.ApiWarrantyType
 				warrantyType := redeemCode.WarrantyType
 				note := redeemCode.Note
+				force := redeemCode.Force
 
 				requestData := g.Map{
 					"udid":       req.UDID,
 					"pool":       pool,
 					"warranty":   apiWarrantyType,
 					"deviceType": deviceType,
+					"force":      force,
 					"note":       note,
 					"isBook":     accountType,
 					"token":      platformToken,
@@ -481,14 +487,58 @@ func (s *sPublic) Install(ctx context.Context, req *model.ApplicationInstallReq)
 
 		// 判断是否预约
 		if mobileProvision == "" {
-			// TODO: 预约, 调用接口看证书是不是出来了
+
 			if device == nil {
 				liberr.ErrIsNil(ctx, errors.New("设备信息不存在1"))
 			}
 
+			apiPlatform := device.ApiPlatform
 			// 获取平台信息
-			//apiUrl, platformToken := getPlatformUrlAndToken(ctx, 1)
+			apiUrl, platformToken := getPlatformUrlAndToken(ctx, apiPlatform, "/api/v1/public/device/get")
+			requestData := g.Map{
+				"cert_id": device.CertId,
+				"token":   platformToken,
+			}
 
+			// 调用接口
+			response, err := RequestPost(apiUrl, requestData)
+			if err != nil {
+				liberr.ErrIsNil(ctx, err, fmt.Sprintf("请求接口失败: %s", err.Error()))
+			}
+
+			// 校验 JSON
+			if !json.Valid(response) {
+				liberr.ErrIsNil(ctx, fmt.Errorf("无效的 JSON 响应: %s", string(response)))
+			}
+
+			// 解析 JSON
+			var result *model.GetDeviceDataResp
+			err = json.Unmarshal(response, &result)
+			if err != nil {
+				liberr.ErrIsNil(ctx, err, fmt.Sprintf("解析 JSON 失败: %s", err.Error()))
+			}
+
+			// 判断是否成功
+			resultCode := gconv.Int(result.Code)
+			if resultCode != 0 {
+				liberr.ErrIsNil(ctx, errors.New(result.Msg))
+			}
+
+			if result.Data.Mobileprovision == "" {
+				liberr.ErrIsNil(ctx, errors.New("设备审核中"))
+			} else {
+				// 更新设备信息
+				_, err = dao.SignDevice.Ctx(ctx).
+					WherePri(device.Id).
+					Update(g.Map{
+						"mobileprovision": result.Data.Mobileprovision,
+					})
+
+				if err != nil {
+					liberr.ErrIsNil(ctx, err, fmt.Sprintf("更新设备信息失败: %s", err.Error()))
+				}
+			}
+			mobileProvision = result.Data.Mobileprovision
 		}
 
 		plistUrl, err := signIpa(ctx, req.UDID, p12, mobileProvision)
@@ -651,10 +701,53 @@ func (s *sPublic) CheckDevices(ctx context.Context, req *model.CheckDevicesReq) 
 
 			// 判断是否审核中
 			if device.Mobileprovision == "" {
-				// TODO 查询接口是否审核通过
+				// 查询接口是否审核通过
+				apiPlatform := device.ApiPlatform
+				// 获取平台信息
+				apiUrl, platformToken := getPlatformUrlAndToken(ctx, apiPlatform, "/api/v1/public/device/get")
+				requestData := g.Map{
+					"cert_id": device.CertId,
+					"token":   platformToken,
+				}
 
-				// 审核中
-				devicesInfo[len(devicesInfo)-1].Status = "审核中"
+				// 调用接口
+				response, err := RequestPost(apiUrl, requestData)
+				if err != nil {
+					liberr.ErrIsNil(ctx, err, fmt.Sprintf("请求接口失败: %s", err.Error()))
+				}
+
+				// 校验 JSON
+				if !json.Valid(response) {
+					liberr.ErrIsNil(ctx, fmt.Errorf("无效的 JSON 响应: %s", string(response)))
+				}
+
+				// 解析 JSON
+				var result *model.GetDeviceDataResp
+				err = json.Unmarshal(response, &result)
+				if err != nil {
+					liberr.ErrIsNil(ctx, err, fmt.Sprintf("解析 JSON 失败: %s", err.Error()))
+				}
+
+				// 判断是否成功
+				resultCode := gconv.Int(result.Code)
+				if resultCode != 0 {
+					liberr.ErrIsNil(ctx, errors.New(result.Msg))
+				}
+
+				if result.Data.Mobileprovision == "" {
+					devicesInfo[len(devicesInfo)-1].Status = result.Msg
+				} else {
+					// 更新设备信息
+					_, err = dao.SignDevice.Ctx(ctx).
+						WherePri(device.Id).
+						Update(g.Map{
+							"mobileprovision": result.Data.Mobileprovision,
+						})
+
+					if err != nil {
+						liberr.ErrIsNil(ctx, err, fmt.Sprintf("更新设备信息失败: %s", err.Error()))
+					}
+				}
 			}
 		}
 
@@ -686,6 +779,7 @@ func getEnabledPlatforms(ctx context.Context) (platforms []g.Map, err error) {
 	err = g.Try(ctx, func(ctx context.Context) {
 		err = dao.SignPlatform.Ctx(ctx).
 			Where("status", 1).
+			Order("weigh desc").
 			Scan(&platformsInfo)
 		liberr.ErrIsNil(ctx, err, "查询平台失败")
 

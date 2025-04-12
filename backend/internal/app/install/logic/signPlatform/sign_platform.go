@@ -1,6 +1,6 @@
 // ==========================================================================
 // GFast自动生成logic操作代码。
-// 生成日期：2025-03-25 21:39:11
+// 生成日期：2025-04-12 18:50:08
 // 生成路径: internal/app/install/logic/sign_platform.go
 // 生成人：smithy
 // desc:平台
@@ -64,6 +64,9 @@ func (s *sSignPlatform) List(ctx context.Context, req *model.SignPlatformSearchR
 		if len(req.DateRange) != 0 {
 			m = m.Where(dao.SignPlatform.Columns().CreatedAt+" >=? AND "+dao.SignPlatform.Columns().CreatedAt+" <=?", req.DateRange[0], req.DateRange[1])
 		}
+		if req.Weigh != "" {
+			m = m.Where(dao.SignPlatform.Columns().Weigh+" = ?", gconv.Int(req.Weigh))
+		}
 		listRes.Total, err = m.Count()
 		liberr.ErrIsNil(ctx, err, "获取总行数失败")
 		if req.PageNum == 0 {
@@ -73,7 +76,7 @@ func (s *sSignPlatform) List(ctx context.Context, req *model.SignPlatformSearchR
 		if req.PageSize == 0 {
 			req.PageSize = consts.PageSize
 		}
-		order := "id asc"
+		order := "weigh desc"
 		if req.OrderBy != "" {
 			order = req.OrderBy
 		}
@@ -91,6 +94,7 @@ func (s *sSignPlatform) List(ctx context.Context, req *model.SignPlatformSearchR
 				Status:    v.Status,
 				Token:     v.Token,
 				CreatedAt: v.CreatedAt,
+				Weigh:     v.Weigh,
 			}
 		}
 	})
@@ -124,13 +128,16 @@ func (s *sSignPlatform) GetExportData(ctx context.Context, req *model.SignPlatfo
 		if len(req.DateRange) != 0 {
 			m = m.Where(dao.SignPlatform.Columns().CreatedAt+" >=? AND "+dao.SignPlatform.Columns().CreatedAt+" <=?", req.DateRange[0], req.DateRange[1])
 		}
+		if req.Weigh != "" {
+			m = m.Where(dao.SignPlatform.Columns().Weigh+" = ?", gconv.Int(req.Weigh))
+		}
 		if req.PageNum == 0 {
 			req.PageNum = 1
 		}
 		if req.PageSize == 0 {
 			req.PageSize = consts.PageSize
 		}
-		order := "id asc"
+		order := "weigh desc"
 		if req.OrderBy != "" {
 			order = req.OrderBy
 		}
@@ -176,6 +183,7 @@ func (s *sSignPlatform) Import(ctx context.Context, file *ghttp.UploadFile) (err
 				Token:     d[5],
 				CreatedAt: gconv.GTime(d[6]),
 				UpdatedAt: gconv.GTime(d[7]),
+				Weigh:     gconv.Int64(d[8]),
 			}
 		}
 		if len(data) > 0 {
@@ -206,6 +214,7 @@ func (s *sSignPlatform) Add(ctx context.Context, req *model.SignPlatformAddReq) 
 			OpenSsl: req.OpenSsl,
 			Status:  req.Status,
 			Token:   req.Token,
+			Weigh:   req.Weigh,
 		})
 		liberr.ErrIsNil(ctx, err, "添加失败")
 	})
@@ -221,6 +230,7 @@ func (s *sSignPlatform) Edit(ctx context.Context, req *model.SignPlatformEditReq
 			OpenSsl: req.OpenSsl,
 			Status:  req.Status,
 			Token:   req.Token,
+			Weigh:   req.Weigh,
 		})
 		liberr.ErrIsNil(ctx, err, "修改失败")
 	})

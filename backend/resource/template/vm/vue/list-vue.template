@@ -329,7 +329,7 @@
           {{if $column.IsOverflowTooltip}}:show-overflow-tooltip="true"{{end}}
           {{if $column.IsFixed}}fixed="left"{{end}}>
               <template #default="scope">
-                  <el-switch  v-model="scope.row.{{$column.HtmlField}}" class="ml-2" @change="change{{$column.GoField}}(scope.row)"/>
+                  <el-switch  :active-value=1 :inactive-value=0 v-model="scope.row.{{$column.HtmlField}}" class="ml-2" @change="change{{$column.GoField}}(scope.row)"/>
               </template>
           </el-table-column>
           {{else if eq $column.HtmlType "selects" "checkbox" "treeSelects"}}
