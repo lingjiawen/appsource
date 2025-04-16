@@ -11,6 +11,20 @@ export function getConfigApi(): Promise<ListResult> {
   });
 }
 
+export function getHelpApi(): Promise<ListResult> {
+  return http.request({
+    url: "gethelp",
+    method: "get"
+  });
+}
+
+export function getAboutApi(): Promise<ListResult> {
+  return http.request({
+    url: "getabout",
+    method: "get"
+  });
+}
+
 export function installApi(data?: object): Promise<any> {
   return http.request({
     url: "install",

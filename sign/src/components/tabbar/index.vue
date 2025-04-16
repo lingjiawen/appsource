@@ -15,8 +15,8 @@
 </template>
 
 <script setup lang="ts">
-import {ref, reactive, onMounted} from "vue";
-import {useConfigStore} from "@/store/useConfigStore";
+import { ref, reactive, onMounted } from "vue";
+import { useConfigStore } from "@/store/useConfigStore";
 
 const configStore = useConfigStore(); // 使用 store 实例
 
@@ -33,15 +33,17 @@ const tabbarData = reactive([
     }
   },
   {
+    useSvg: true,
+    svg: "help",
     icon: "gem-o",
-    title: "工具",
+    title: "帮助中心",
     to: {
-      name: "Tools"
+      name: "Help"
     }
   },
   {
     icon: "user-o",
-    title: "关于",
+    title: "关于我们",
     to: {
       name: "About"
     }
@@ -49,6 +51,10 @@ const tabbarData = reactive([
 ]);
 
 onMounted(async () => {
+  configStore.setLoading(true);
   await configStore.fetchConfig(); // 在tabbar加载时获取config数据
+  await configStore.fetchHelp(); // 在tabbar加载时获取config数据
+  await configStore.fetchAbout(); // 在tabbar加载时获取config数据
+  configStore.setLoading(false);
 });
 </script>

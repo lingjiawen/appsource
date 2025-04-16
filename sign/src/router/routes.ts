@@ -1,6 +1,7 @@
 import Layout from "@/layout/index.vue";
 import type { RouteRecordRaw } from "vue-router";
-import Demo from "@/views/demo/index.vue";
+import Home from "@/views/home/index.vue";
+import Help from "@/views/help/index.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -12,15 +13,15 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "sign",
         name: "Sign",
-        component: Demo,
+        component: Home,
         meta: {
           title: "主页"
         }
       },
       {
-        path: "tools",
-        name: "Tools",
-        component: () => import("@/views/tools/index.vue"),
+        path: "help",
+        name: "Help",
+        component: () => import("@/views/help/index.vue"),
         meta: {
           title: "工具"
         }

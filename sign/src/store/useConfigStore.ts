@@ -1,5 +1,5 @@
-import {defineStore} from 'pinia';
-import {getConfigApi} from "@/api/mock";
+import {defineStore} from "pinia";
+import {getAboutApi, getConfigApi, getHelpApi} from "@/api/mock";
 
 interface Config {
     list: {
@@ -29,6 +29,9 @@ export const useConfigStore = defineStore("config", {
         vats: '',
         security: '',
         loading: true,
+
+        helpList: [],
+        aboutList: [],
     }),
     actions: {
         setConfig(config: Config) {
@@ -42,6 +45,15 @@ export const useConfigStore = defineStore("config", {
             this.icp = config.list.icp;
             this.vats = config.list.vats;
             this.security = config.list.security;
+        },
+        setLoading(loading: boolean) {
+            this.loading = loading;
+        },
+        setHelpList(helpList: any[]) {
+            this.helpList = helpList;
+        },
+        setAboutList(aboutList: any[]) {
+            this.aboutList = aboutList;
         },
         async fetchConfig() {
             /*
@@ -64,12 +76,26 @@ export const useConfigStore = defineStore("config", {
             try {
                 const configResult = await getConfigApi(); // 获取配置
                 this.setConfig(configResult);
-                this.loading = false; // 数据加载完成
             } catch (error) {
                 console.error('获取配置失败', error);
-                this.loading = false;
             }
         },
+        async fetchHelp() {
+            try {
+                const helpResult = await getHelpApi(); // 获取配置
+                this.setHelpList(helpResult.list);
+            } catch (error) {
+                console.error('获取配置失败', error);
+            }
+        },
+        async fetchAbout() {
+            try {
+                const aboutResult = await getAboutApi(); // 获取配置
+                this.setAboutList(aboutResult.list);
+            } catch (error) {
+                console.error('获取配置失败', error);
+            }
+        }
     },
     getters: {
         getNavbarTitle: (state) => state.navbarTitle,
@@ -82,5 +108,8 @@ export const useConfigStore = defineStore("config", {
         getIcp: (state) => state.icp,
         getVats: (state) => state.vats,
         getSecurity: (state) => state.security,
+
+        getHelpList: (state) => state.helpList,
+        getAboutList: (state) => state.aboutList,
     },
 });
