@@ -113,12 +113,11 @@ const dataList = () => {
       }));
     });
 
-    console.log(list);
-    console.log(groups);
-
-    for (const key in state.configGroup) {
-      state.activeTab = key
-      break
+    if (!state.activeTab || !state.configGroup[state.activeTab]) {
+      for (const key in state.configGroup) {
+        state.activeTab = key
+        break
+      }
     }
   });
 };

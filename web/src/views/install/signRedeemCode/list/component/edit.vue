@@ -71,7 +71,10 @@
               :value="dict.value"
             >{{dict.label }}</el-radio>
           </el-radio-group>
-        </el-form-item>        
+        </el-form-item>
+        <el-form-item label="强制添加" prop="force">
+          <el-switch  v-model="formData.force" class="ml-2" />
+        </el-form-item>
         <el-form-item label="禁用" prop="banned">
           <el-switch  v-model="formData.banned" class="ml-2" />
         </el-form-item>        
@@ -158,8 +161,9 @@ const state = reactive<SignRedeemCodeEditState>({
     apiPlatform: undefined,    
     note: undefined,    
     apiWarrantyType: undefined,    
-    banned: false ,    
-    active: false ,    
+    banned: false,
+    active: false,
+    force: false,
     activeAt: undefined,    
     createdBy: undefined,    
     updatedBy: undefined,    
@@ -187,7 +191,8 @@ const openDialog = (row?: SignRedeemCodeInfoData) => {
       data.pool = ''+data.pool      
       data.apiPlatform = ''+data.apiPlatform      
       data.apiWarrantyType = ''+data.apiWarrantyType      
-      data.banned = Boolean(data.banned)      
+      data.banned = Boolean(data.banned)
+      data.force = Boolean(data.force)
       data.active = Boolean(data.active)      
       state.formData = data;
   })
@@ -247,7 +252,8 @@ const resetForm = ()=>{
     apiPlatform: '' ,    
     note: '',
     apiWarrantyType: '' ,    
-    banned: false ,    
+    banned: false ,
+    force: false,
     active: false ,    
     activeAt: undefined,    
     createdBy: undefined,    

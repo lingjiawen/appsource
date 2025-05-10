@@ -74,6 +74,11 @@
             </el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="强制添加" prop="force">
+          <el-switch  v-model="formData.force"
+                      :active-value=1
+                      :inactive-value=0 class="ml-2" />
+        </el-form-item>
         <el-form-item label="备注" prop="note">
           <el-input v-model="formData.note" type="textarea" placeholder="请输入备注" />
         </el-form-item>
@@ -135,6 +140,7 @@ const state = reactive<SignRedeemCodeAddState>({
     apiPlatform: undefined,
     apiWarrantyType: undefined,
     note: undefined,
+    force: undefined,
   }
 });
 const {loading, isShowDialog, formData, rules} = toRefs(state);
@@ -191,6 +197,7 @@ const resetForm = () => {
     apiPlatform: "1",
     apiWarrantyType: "0",
     note: "",
+    force: 0,
   }
 };
 </script>
