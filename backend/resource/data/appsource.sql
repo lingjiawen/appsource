@@ -4602,8 +4602,36 @@ VALUES (36, '安装包名', 'install.download.bundleID', '', 1, 'string', 0, 'in
 INSERT INTO `sys_config`
 VALUES (37, '安装版本', 'install.download.version', '', 1, 'string', 0, 'install.download', 1, 0, '', NULL, NULL);
 
+INSERT INTO `sys_config`
+VALUES (38, 'APP启动图', 'install.download.launchIcon', '', 1, 'image', 0, 'install.download', 1, 0, '', NULL, NULL);
+
+INSERT INTO `sys_config`
+VALUES (39, 'APP交流群', 'install.download.group', '', 1, 'string', 0, 'install.download', 1, 0, '', NULL, NULL);
+
+INSERT INTO `sys_config`
+VALUES (40, 'APP联系我们', 'install.download.contactUrl', '', 1, 'string', 0, 'install.download', 1, 0, '', NULL, NULL);
+
+INSERT INTO `sys_config`
+VALUES (41, 'APP购买链接', 'install.download.buyUrl', '', 1, 'string', 0, 'install.download', 1, 0, '', NULL, NULL);
+
+INSERT INTO `sys_config`
+VALUES (42, 'APP教程地址', 'install.download.tutorialUrl', '', 1, 'string', 0, 'install.download', 1, 0, '', NULL, NULL);
+
+INSERT INTO `sys_config`
+VALUES (43, '兑换地址', 'install.download.redeemUrl', '', 1, 'string', 0, 'install.download', 1, 0, '', NULL, NULL);
+
+INSERT INTO `sys_config`
+VALUES (44, '兑换权限', 'install.download.redeemPermission', '', 1, 'string', 0, 'install.download', 1, 0, '', NULL, NULL);
+
+INSERT INTO `sys_config`
+VALUES (45, '导入权限', 'install.download.importPermission', '', 1, 'string', 0, 'install.download', 1, 0, '', NULL, NULL);
+
+
 UNLOCK
 TABLES;
+
+-- 添加权重字段: weigh
+ALTER TABLE `sys_config` ADD COLUMN `weigh` int(11) DEFAULT '0' COMMENT '权重' AFTER `config_value`;
 
 --
 -- Table structure for table `sys_dept`
@@ -7230,3 +7258,85 @@ INSERT INTO `sign_platform`
 VALUES (2, '华阳', 'huayang', 'api.huayang.com', 1, '', 1, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
 INSERT INTO `sign_platform`
 VALUES (3, '云腾', 'yunteng', 'api.yunteng.com', 1, '', 1, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+
+
+-- 帮助中心
+DROP TABLE IF EXISTS `sign_help`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sign_help`
+(
+    `id`         INT unsigned NOT NULL AUTO_INCREMENT COMMENT "ID",
+    `title`      text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '标题',
+    `content`    text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '内容',
+    `is_expand`  TINYINT(1) DEFAULT 1 COMMENT '默认展开',
+    `weigh`      INT NOT NULL DEFAULT 0 COMMENT '权重',
+    `created_at` datetime NULL DEFAULT NULL COMMENT '创建日期',
+    `updated_at` datetime NULL DEFAULT NULL COMMENT '修改日期',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='帮助中心';
+
+INSERT INTO `sign_help`
+VALUES (1, '本站公告说明', '公告声明：<br>本站所有IPA文件均来自互联网收集/不参与制作破解<br>如侵犯您的合法权益，请通过线上客服删除<br>本站但用勿用于非法途径！一切后果自行承担！', 1, 0, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sign_help`
+VALUES (2, '如何签名安装使用?', '【购买签名】→【获取UDID】→【选择应用】【输入签名码】→【开始签名】（如果长时间没有弹窗提示出现未知错误请重试，刷新页面重新走一下下单流程App即可安装）', 0, 0, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sign_help`
+VALUES (3, '安全延迟进行怎么关闭?', '设置-隐私与安全-开发者模式保护关闭！即可解决问题', 0, 0, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sign_help`
+VALUES (4, 'UDID定制服务是什么?', '大型企业的速度慢不稳定，直白一点，因为半黑解性质，企业签名应用被禁用频率非常高/天数非常少，无法打开，且企业证书很贵很贵。UDID签名是目前一种特殊签名应用的方式，比企业签名更加稳定。使用UDID定制的签名会自己定制要使用的软件，可以在每一个签名码内的软件', 0, 0, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sign_help`
+VALUES (5, 'UDID定制的软件能用多久?', '理论时间一年。但是取决于UDID证书供应商提供的证书，也可能出现提前掉签的情况<br>可放心购买，一般情况下不掉签用满一个合同年', 0, 0, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sign_help`
+VALUES (6, '定制后刷机或升级系统，之前的软件还能用吗?', '可以，定制应用不受刷机，升级系统，抹除手机内容影响', 0, 0, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+
+
+-- 关于我们
+DROP TABLE IF EXISTS `sign_about`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sign_about`
+(
+    `id`         INT unsigned NOT NULL AUTO_INCREMENT COMMENT "ID",
+    `icon`       varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '图标',
+    `title`      text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '标题',
+    `subtitle`   text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '内容',
+    `is_link`    TINYINT(1) DEFAULT 1 COMMENT '是否链接',
+    `url`        text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '链接',
+    `group`      TINYINT(1) NOT NULL DEFAULT 0 COMMENT '分组',
+    `weigh`      INT NOT NULL DEFAULT 0 COMMENT '权重',
+    `created_at` datetime NULL DEFAULT NULL COMMENT '创建日期',
+    `updated_at` datetime NULL DEFAULT NULL COMMENT '修改日期',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='关于我们';
+
+
+INSERT INTO `sign_about`
+VALUES (1, 'cart', '购买链接', '立即跳转', 1, "https://baidu.com", 1, 0, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sign_about`
+VALUES (2, 'service', '客服QQ', '立即跳转', 1, "https://baidu.com", 1, 0, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sign_about`
+VALUES (3, '', '多开后无网络', '点我查看', 1, "https://baidu.com", 2, 0, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sign_about`
+VALUES (4, '', '开启开发者教程', '点我查看', 1, "https://baidu.com", 2, 0, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sign_about`
+VALUES (5, '', '失窃保护关闭教程', '点我查看', 1, "https://baidu.com", 2, 0, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sign_about`
+VALUES (6, '', '备用UDID获取', '点我查看', 1, "https://www.neicexia.com/udid", 3, 0, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sign_about`
+VALUES (7, '', '备用获取教程', '点我查看', 1, "https://baidu.com", 3, 0, '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+
+-- 关于我们分组
+INSERT INTO `sys_dict_type`
+VALUES (62, '关于分组', 'sign_about_group', 1, 31, 0, '分组1,分组2,分组3,分组4', '2023-12-28 15:48:03', '2023-12-28 15:48:03');
+INSERT INTO `sys_dict_data`
+VALUES (154, 0, '分组1', '1', 'sign_about_group', '', '', 0, 1, 31, 31, '', '2023-12-28 15:48:54',
+        '2023-12-28 15:52:24');
+INSERT INTO `sys_dict_data`
+VALUES (155, 0, '分组2', '2', 'sign_about_group', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35',
+        '2023-12-28 15:52:35');
+INSERT INTO `sys_dict_data`
+VALUES (156, 0, '分组3', '3', 'sign_about_group', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35',
+        '2023-12-28 15:52:35');
+INSERT INTO `sys_dict_data`
+VALUES (157, 0, '分组4', '4', 'sign_about_group', '', '', 0, 1, 31, 31, '', '2023-12-28 15:52:35',
+        '2023-12-28 15:52:35');

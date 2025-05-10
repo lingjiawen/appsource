@@ -10,7 +10,7 @@ all: zsign-builder go-builder docker-prod
 # 清理所有构建产物
 clean:
 	rm -rf ${BUILD_DIR}
-
+	
 # 构建运行镜像（直接从本地缓存复制）
 docker-prod:
 	docker buildx build --platform linux/amd64 \
@@ -28,6 +28,7 @@ ${ZSIGN_LIB}:
 	@echo "Building zsign..."
 	@mkdir -p ${BUILD_DIR}/zsign
 	docker buildx build --target export \
+        --pull=false \
 		--platform linux/amd64 \
 		-o type=local,dest=${BUILD_DIR}/zsign/ \
 		-f ./manifest/docker/Dockerfile-zsign .
@@ -40,6 +41,7 @@ ${GO_BIN}: ${ZSIGN_LIB}
 	@echo "Building Go binary..."
 	@mkdir -p ${BUILD_DIR}/go
 	docker buildx build --target export \
+		--pull=false \
 		--platform linux/amd64 \
 		-o type=local,dest=${BUILD_DIR}/go \
 		-f ./manifest/docker/Dockerfile-go .

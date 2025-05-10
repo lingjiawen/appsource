@@ -76,3 +76,11 @@ type GetDeviceData struct {
 	WarrantyExpirationTime int64  `json:"warranty_expiration_time" p:"warranty_expiration_time" dc:"质保过期时间"`
 	PlatformId             int    `json:"platform_id" p:"platform_id" dc:"平台ID"`
 }
+
+type GetHelpRes struct {
+	List []*SignHelpListRes `json:"list"`
+}
+
+type GetAboutRes struct {
+	List [][]*SignAboutListRes `json:"list"`
+}

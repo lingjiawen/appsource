@@ -21,6 +21,20 @@ func (c *publicController) GetConfig(ctx context.Context, req *install.SysConfig
 	return
 }
 
+// GetHelp 获取配置
+func (c *publicController) GetHelp(ctx context.Context, req *install.GetHelpReq) (res *install.GetHelpRes, err error) {
+	res = new(install.GetHelpRes)
+	res.GetHelpRes, err = service.Public().GetHelp(ctx)
+	return
+}
+
+// GetAbout 获取配置
+func (c *publicController) GetAbout(ctx context.Context, req *install.GetAboutReq) (res *install.GetAboutRes, err error) {
+	res = new(install.GetAboutRes)
+	res.GetAboutRes, err = service.Public().GetAbout(ctx)
+	return
+}
+
 // ApplicationInstall 安装
 func (c *publicController) ApplicationInstall(ctx context.Context, req *install.ApplicationInstallReq) (res *install.ApplicationInstallRes, err error) {
 	res = new(install.ApplicationInstallRes)

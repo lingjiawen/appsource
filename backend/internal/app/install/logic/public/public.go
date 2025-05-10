@@ -757,6 +757,50 @@ func (s *sPublic) CheckDevices(ctx context.Context, req *model.CheckDevicesReq) 
 	return
 }
 
+func (s *sPublic) GetHelp(ctx context.Context) (listRes *model.GetHelpRes, err error) {
+	listRes = new(model.GetHelpRes)
+	err = g.Try(ctx, func(ctx context.Context) {
+		order := "weigh desc"
+		var res []*model.SignHelpListRes
+		err = dao.SignHelp.Ctx(ctx).WithAll().Order(order).Scan(&res)
+		liberr.ErrIsNil(ctx, err, "获取数据失败")
+		listRes.List = make([]*model.SignHelpListRes, len(res))
+		for k, v := range res {
+			listRes.List[k] = &model.SignHelpListRes{
+				Id:       v.Id,
+				Title:    v.Title,
+				Content:  v.Content,
+				IsExpand: v.IsExpand,
+				Weigh:    v.Weigh,
+			}
+		}
+	})
+	return
+}
+
+func (s *sPublic) GetAbout(ctx context.Context) (listRes *model.GetAboutRes, err error) {
+	listRes = new(model.GetAboutRes)
+	err = g.Try(ctx, func(ctx context.Context) {
+		order := "weigh desc"
+		// 1. 先查询全部数据（不分组）
+		var allItems []*model.SignAboutListRes
+		err = dao.SignAbout.Ctx(ctx).WithAll().Order(order).Scan(&allItems)
+
+		// 2. 手动按 group 字段分类
+		groupMap := make(map[string][]*model.SignAboutListRes)
+		for _, item := range allItems {
+			groupMap[strconv.Itoa(item.Group)] = append(groupMap[strconv.Itoa(item.Group)], item)
+		}
+
+		// 3. 转换为二维切片
+		listRes.List = make([][]*model.SignAboutListRes, 0, len(groupMap))
+		for _, groupItems := range groupMap {
+			listRes.List = append(listRes.List, groupItems)
+		}
+	})
+	return
+}
+
 func savePlistInfo(ctx context.Context, plistInfo model.InstallPlist) (uuid *string, err error) {
 	cacheKey := gconv.String(gtime.TimestampMilli())
 	// 将 plistInfo 转换为 JSON 字符串
@@ -850,20 +894,23 @@ func signIpa(ctx context.Context, udid, base64p12, base64mp string) (plistUrl st
 		liberr.ErrIsNil(ctx, err)
 		appVersionConfig, err := commonService.SysConfig().GetConfigByKey(ctx, "install.download.version")
 		liberr.ErrIsNil(ctx, err)
+		appPathConfig, err := commonService.SysConfig().GetConfigByKey(ctx, "install.download.url")
+		liberr.ErrIsNil(ctx, err)
 
 		// 获取配置信息
 		appName := appNameConfig.ConfigValue
 		appIcon := appIconConfig.ConfigValue
 		appBundleID := appBundleIDConfig.ConfigValue
 		appVersion := appVersionConfig.ConfigValue
-		if appName == "" || appIcon == "" || appBundleID == "" || appVersion == "" {
+		appPath := appPathConfig.ConfigValue
+		if appName == "" || appIcon == "" || appBundleID == "" || appVersion == "" || appPath == "" {
 			liberr.ErrIsNil(ctx, errors.New("请先配置安装信息"))
 		}
 
 		// 开始签名
 		publicPathConfig, _ := g.Cfg().Get(ctx, "server.serverRoot")
 		publicPath := publicPathConfig.String()
-		ipaPath := filepath.Join(publicPath, "sign.ipa")
+		ipaPath := filepath.Join(publicPath, appPath)
 		signedIpaPath := filepath.Join(publicPath, "signed")
 		if err := gfile.Mkdir(signedIpaPath); err != nil {
 			liberr.ErrIsNil(ctx, err, "创建签名文件夹失败")

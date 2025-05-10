@@ -245,7 +245,7 @@ func (s *sSignPlatform) Delete(ctx context.Context, ids []uint) (err error) {
 	return
 }
 
-// 平台开启SSL修改（状态）
+// ChangeOpenSsl 平台开启SSL修改（状态）
 func (s *sSignPlatform) ChangeOpenSsl(ctx context.Context, id uint, openSsl int) (err error) {
 	err = g.Try(ctx, func(ctx context.Context) {
 		_, err = dao.SignPlatform.Ctx(ctx).WherePri(id).
@@ -257,7 +257,7 @@ func (s *sSignPlatform) ChangeOpenSsl(ctx context.Context, id uint, openSsl int)
 	return
 }
 
-// 平台启用修改（状态）
+// ChangeStatus 平台启用修改（状态）
 func (s *sSignPlatform) ChangeStatus(ctx context.Context, id uint, status int) (err error) {
 	err = g.Try(ctx, func(ctx context.Context) {
 		_, err = dao.SignPlatform.Ctx(ctx).WherePri(id).

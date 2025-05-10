@@ -7,6 +7,8 @@ import (
 
 type IPublic interface {
 	Install(ctx context.Context, req *model.ApplicationInstallReq) (res *model.ApplicationInstallRes, err error)
+	GetHelp(ctx context.Context) (listRes *model.GetHelpRes, err error)
+	GetAbout(ctx context.Context) (listRes *model.GetAboutRes, err error)
 	PrivateInstall(ctx context.Context, req *model.ApplicationPrivateInstallReq) (res *model.ApplicationPrivateInstallRes, err error)
 	GetPlist(ctx context.Context, req *model.GetPlistReq) (res *model.GetPlistRes, err error)
 	CheckDevices(ctx context.Context, req *model.CheckDevicesReq) (res *model.CheckDevicesRes, err error)

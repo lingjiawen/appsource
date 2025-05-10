@@ -19,6 +19,28 @@ type SysConfigSearchRes struct {
 	*model.SysConfigSearchRes
 }
 
+// GetHelpReq 分页请求参数
+type GetHelpReq struct {
+	g.Meta `path:"/gethelp" tags:"签名工具" method:"get" summary:"帮助配置项"`
+}
+
+// GetHelpRes 列表返回结果
+type GetHelpRes struct {
+	g.Meta `mime:"application/json"`
+	*model.GetHelpRes
+}
+
+// GetAboutReq 分页请求参数
+type GetAboutReq struct {
+	g.Meta `path:"/getabout" tags:"签名工具" method:"get" summary:"关于配置项"`
+}
+
+// GetAboutRes 列表返回结果
+type GetAboutRes struct {
+	g.Meta `mime:"application/json"`
+	*model.GetAboutRes
+}
+
 // ApplicationInstallReq 安装请求参数
 type ApplicationInstallReq struct {
 	g.Meta `path:"/install" tags:"签名工具" method:"post" summary:"兑换安装"`
